@@ -1,7 +1,17 @@
-const matches = [];
+const colorMatches = require('../utils/colorMatches');
 
-/* Choose which path to take depending on the piece being inserted */
-function matchPath(newItem, tops, bottoms, outer) {
+let tops = [];
+let bottoms = [];
+let outer = [];
+let matches = [];
+
+/* Entry point */
+function matchPath(newItem, topsArray, bottomsArray, outerArray) {
+  tops = topsArray;
+  bottoms = bottomsArray;
+  outer = outerArray;
+  matches = []; // Reset for each run
+
   let matchItem;
 
   if (newItem.type === "onepiece") {
@@ -19,12 +29,12 @@ function matchPath(newItem, tops, bottoms, outer) {
       spring: newItem.spring,
       summer: newItem.summer,
       autumn: newItem.autumn,
-      winter: newItem.winter
+      winter: newItem.winter,
     };
 
     matches.push(result);
-
-    return matchSeason(newItem, outer);
+    matchSeason(newItem, outer);
+    return matches;
   }
 
   if (newItem.type === "top") {
@@ -38,32 +48,35 @@ function matchPath(newItem, tops, bottoms, outer) {
   } else if (newItem.type === "match" && newItem.outer && !newItem.bottom) {
     matchItem = bottoms;
   } else {
-    return;
+    return [];
   }
 
-  return matchSeason(newItem, matchItem);
+  matchSeason(newItem, matchItem);
+  return matches;
 }
 
-function matchSeason(newItem, matchItem) {
-  const seasonalMatches = matchItem.filter(item =>
+function matchSeason(newItem, matchItems) {
+  const seasonalMatches = matchItems.filter(item =>
     (item.spring && newItem.spring) ||
     (item.summer && newItem.summer) ||
     (item.autumn && newItem.autumn) ||
     (item.winter && newItem.winter)
   );
 
-  return matchStyle(newItem, seasonalMatches);
+  matchStyle(newItem, seasonalMatches);
 }
 
 function matchStyle(newItem, matchItems) {
-  return matchItems.filter(item => {
+  const filtered = matchItems.filter(item => {
     const combinedStyles = [...(newItem.styles || []), ...(item.styles || [])];
     const patternedCount = combinedStyles.filter(s => s === "patterned").length;
     return patternedCount <= 1;
   });
+
+  matchColor(newItem, filtered);
 }
 
-function matchColor(newItem, matchItem) {
+function matchColor(newItem, matchItems) {
   function getColorScore(color1, color2) {
     if (colorMatches[color1]) {
       for (const score in colorMatches[color1]) {
@@ -75,7 +88,7 @@ function matchColor(newItem, matchItem) {
     return 0;
   }
 
-  for (let item of matchItem) {
+  for (let item of matchItems) {
     let scoreSum = 0;
     let matchCount = 0;
 
@@ -104,11 +117,8 @@ function matchColor(newItem, matchItem) {
       pushResult(newItem, item, allColors, averageScore);
     }
   }
-
-  return matches;
 }
 
-/* Push result to matches array */
 function pushResult(newItem, matchItem, allColors, averageScore) {
   const min_temp = (newItem.min_temp + matchItem.min_temp) / 2;
   const max_temp = (newItem.max_temp + matchItem.max_temp) / 2;
@@ -131,7 +141,6 @@ function pushResult(newItem, matchItem, allColors, averageScore) {
       ...overrides,
     };
 
-    // ✅ Clean up any lingering `style`
     if ("style" in result) {
       delete result.style;
     }
@@ -190,190 +199,6 @@ function pushResult(newItem, matchItem, allColors, averageScore) {
   }
 }
 
-
-const tops = [
-  {
-    "name": "Green paisley shirt",
-    "imageUrl": "",
-    "min_temp": 18,
-    "max_temp": 28,
-    "colors": ["cream","green"],
-    "styles": ["patterned"],
-    "type": "top",
-    "spring" : true,
-    "summer" : true,
-    "autumn" : false,
-    "winter" : false
-  },
-  {
-    "name": "Floaty cream blouse",
-    "imageUrl": "",
-    "min_temp": 11,
-    "max_temp": 19,
-    "colors": ["cream"],
-    "styles": ["plain"],
-    "type": "top",
-    "spring" : true,
-    "summer" : false,
-    "autumn" : true,
-    "winter" : true
-  },
-  {
-    "name": "Embroidered blouse",
-    "imageUrl": "",
-    "min_temp": 18,
-    "max_temp": 29,
-    "colors": ["blue","white"],
-    "styles": ["patterned"],
-    "type": "top",
-    "spring" : true,
-    "summer" : true,
-    "autumn" : false,
-    "winter" : false
-  },
-    {
-    "name": "Black tank",
-    "imageUrl": "",
-    "min_temp": 14,
-    "max_temp": 32,
-    "colors": ["black"],
-    "styles": ["plain"],
-    "type": "top",
-    "spring" : true,
-    "summer" : true,
-    "autumn" : true,
-    "winter" : false
-  }
-];
-
-const bottoms = [
-  {
-    "name": "Wide Blue Jeans",
-    "imageUrl": "",
-    "min_temp": 5,
-    "max_temp": 20,
-    "colors" : ["blue"],
-    "styles": ["plain"],
-    "type": "bottom",
-    "spring" : true,
-    "summer" : false,
-    "autumn" : true,
-    "winter" : true
-  },
-  {
-    "name": "Fun shorts",
-    "imageUrl": "",
-    "min_temp": 20,
-    "max_temp": 40,
-    "colors" : ["black","white"],
-    "styles": ["patterned"],
-    "type": "bottom",
-    "spring" : true,
-    "summer" : true,
-    "autumn" : false,
-    "winter" : false
-  },
-  {
-    "name": "White shorts",
-    "imageUrl": "",
-    "min_temp": 20,
-    "max_temp": 40,
-    "colors": ["white"],
-    "styles": ["patterned"],
-    "type": "bottom",
-    "spring" : true,
-    "summer" : true,
-    "autumn" : false,
-    "winter" : false
-  }
-];
-
-const outer = [
-  {
-    "name": "Camel coat",
-    "imageUrl": "",
-    "min_temp": 14,
-    "max_temp": 22,
-    "colors": ["camel"],
-    "styles": ["plain"],
-    "type": "outerwear",
-    "spring" : true,
-    "summer" : true,
-    "autumn" : true,
-    "winter" : true
-  }
-]
-
-const onePiece = [
-  {
-    "name": "Summer Sundress",
-    "imageUrl": "",
-    "min_temp": 24,
-    "max_temp": 38,
-    "colors" : ["white","blue"],
-    "styles": ["patterned"],
-    "type": "onepiece",
-    "spring" : true,
-    "summer" : true,
-    "autumn" : false,
-    "winter" : false
-  },
-  {
-    "name": "Long Sleeve Midi Dress",
-    "imageUrl": "",
-    "min_temp": 10,
-    "max_temp": 22,
-    "colors" : ["blue"],
-    "styles": ["plain"],
-    "type": "onepiece",
-    "spring" : false,
-    "summer" : false,
-    "autumn" : true,
-    "winter" : true
-  }
-];
-
-const colorMatches = {
-  white: {
-    3: ["black","green","blue"],
-    2: ["cream","camel"],
-    1: []
-  },
-  black: {
-    3: ["white","cream","camel"],
-    2: ["green"],
-    1: ["blue"]
-  },
-  green: {
-    3: ["white"],
-    2: ["black","blue"],
-    1: ["cream","camel"]
-  },
-  blue: {
-    3: ["white"],
-    2: ["green","cream"],
-    1: ["black","camel"]
-  },
-  cream: {
-    3: ["black","camel"],
-    2: ["blue","white"],
-    1: ["green"]
-  }
+module.exports = {
+  matchPath,
 };
-
-let newItem =   {
-    "name": "newtop",
-    "imageUrl": "",
-    "min_temp": 5,
-    "max_temp": 20,
-    "colors" : ["blue"],
-    "styles": ["plain"],
-    "type": "top",
-    "spring" : true,
-    "summer" : true,
-    "autumn" : true,
-    "winter" : true
-  }
-
-matchPath(newItem, tops, bottoms, outer) 
-
