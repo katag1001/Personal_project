@@ -2,6 +2,22 @@ const express = require('express');
 const router = express.Router();
 const matchController = require('../controllers/matchController');
 
-router.post('/generate-match', matchController.generateMatches);
+// Manual match creation (optional)
+router.post('/', matchController.createMatch);
+
+// Route to generate and save matches
+router.post('/generate-and-save', matchController.generateAndSaveMatches);
+
+// Get all matches
+router.get('/', matchController.getAllMatches);
+
+// Get a specific match by ID
+router.get('/:id', matchController.getMatchById);
+
+// Update a match
+router.put('/:id', matchController.updateMatch);
+
+// Delete a match
+router.delete('/:id', matchController.deleteMatch);
 
 module.exports = router;

@@ -5,11 +5,9 @@ const API_BASE = "http://localhost:4444/api";
 const clothingTypes = ["top", "bottom", "outerwear", "onepiece"];
 
 function App() {
-  const [type, setType] = useState("top");
   const [items, setItems] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
-    imageUrl: "",
     min_temp: "",
     max_temp: "",
     colors: "",
@@ -22,20 +20,26 @@ function App() {
   });
   const [matches, setMatches] = useState([]);
 
-  // Fetch items when `type` changes
+  // Fetch all items for all clothing types on mount
   useEffect(() => {
-    fetchItems(type);
-  }, [type]);
+    fetchAllItems();
+  }, []);
 
   // Fetch all matches once on mount
   useEffect(() => {
     fetchMatches();
   }, []);
 
-  async function fetchItems(type) {
-    const res = await fetch(`${API_BASE}/clothing/${type}`);
-    const data = await res.json();
-    setItems(data);
+  async function fetchAllItems() {
+    let allItems = [];
+    for (const type of clothingTypes) {
+      const res = await fetch(`${API_BASE}/clothing/${type}`);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        allItems = allItems.concat(data);
+      }
+    }
+    setItems(allItems);
   }
 
   async function fetchMatches() {
@@ -50,7 +54,6 @@ function App() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    // Wrap colors and styles as arrays since user selects only one each
     const payload = {
       ...formData,
       colors: [formData.colors],
@@ -65,17 +68,15 @@ function App() {
     });
     const data = await res.json();
     if (!data.error) {
-      fetchItems(type);
-      // Optionally fetch matches again if they update when new item is created
+      fetchAllItems();
       fetchMatches();
       setFormData({
         name: "",
-        imageUrl: "",
         min_temp: "",
         max_temp: "",
         colors: "",
         styles: "",
-        type: type,
+        type: "top",
         spring: false,
         summer: false,
         autumn: false,
@@ -86,15 +87,14 @@ function App() {
     }
   }
 
-  async function handleDelete(id) {
+  async function handleDelete(item) {
     if (!window.confirm("Delete this item?")) return;
-    const res = await fetch(`${API_BASE}/clothing/${type}/${id}`, {
+    const res = await fetch(`${API_BASE}/clothing/${item.type}/${item._id}`, {
       method: "DELETE",
     });
     const data = await res.json();
     if (!data.error) {
-      fetchItems(type);
-      // Optionally fetch matches if relevant
+      fetchAllItems();
       fetchMatches();
     } else {
       alert("Error: " + data.error);
@@ -103,26 +103,7 @@ function App() {
 
   return (
     <div style={{ maxWidth: 700, margin: "auto", padding: 20 }}>
-      <h1>Clothing Manager</h1>
-
-      <label>
-        Select Type:{" "}
-        <select
-          value={type}
-          onChange={(e) => {
-            setType(e.target.value);
-            setFormData((fd) => ({ ...fd, type: e.target.value }));
-          }}
-        >
-          {clothingTypes.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <h2>Create New {type}</h2>
+      <h2>Create New Item</h2>
       <form onSubmit={handleSubmit} style={{ marginBottom: 30 }}>
         <input
           type="text"
@@ -134,15 +115,8 @@ function App() {
           required
         />
         <br />
-        <input
-          type="text"
-          placeholder="Image URL"
-          value={formData.imageUrl}
-          onChange={(e) =>
-            setFormData((fd) => ({ ...fd, imageUrl: e.target.value }))
-          }
-        />
-        <br />
+        {/* Removed imageUrl input as requested */}
+
         <input
           type="number"
           placeholder="Min Temp"
@@ -162,6 +136,24 @@ function App() {
           }
           required
         />
+        <br />
+
+        <label>
+          Clothing Type:
+          <select
+            value={formData.type}
+            onChange={(e) =>
+              setFormData((fd) => ({ ...fd, type: e.target.value }))
+            }
+            required
+          >
+            {clothingTypes.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+        </label>
         <br />
 
         <label>
@@ -243,13 +235,13 @@ function App() {
         <button type="submit">Create Item</button>
       </form>
 
-      <h2>{type.charAt(0).toUpperCase() + type.slice(1)} Items</h2>
+      <h2>All Clothing Items</h2>
       <ul>
         {items.length === 0 && <li>No items found</li>}
         {items.map((item) => (
           <li key={item._id} style={{ marginBottom: 10 }}>
-            <strong>{item.name}</strong>{" "}
-            <button onClick={() => handleDelete(item._id)}>Delete</button>
+            <strong>{item.name}</strong> ({item.type}){" "}
+            <button onClick={() => handleDelete(item)}>Delete</button>
             <br />
             <small>Colors: {item.colors.join(", ")}</small>
             <br />

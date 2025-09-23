@@ -1,20 +1,38 @@
 const Match = require('../models/Match');
+const Top = require('../models/Top');
+const Bottom = require('../models/Bottom');
+const Outer = require('../models/Outer');
 const { matchPath } = require('../services/matchService');
 
-// GENERATE matches from a clothing item
-exports.generateMatches = async (req, res) => {
+// CREATE manual match
+exports.createMatch = async (req, res) => {
+  try {
+    const match = new Match(req.body);
+    await match.save();
+    res.json(match);
+  } catch (error) {
+    console.error('Create Match Error:', error);
+    res.json({ error: error.message });
+  }
+};
+
+// New function to generate and save matches
+exports.generateAndSaveMatches = async (req, res) => {
   try {
-    const newItem = req.body;
-
+    const { newItem } = req.body;
+    
+    // Fetch all existing items from the database
     const [tops, bottoms, outer] = await Promise.all([
-      require('../models/Top').find({}),
-      require('../models/Bottom').find({}),
-      require('../models/Outer').find({}),
+      Top.find({}),
+      Bottom.find({}),
+      Outer.find({}),
     ]);
+    
+    // Use the matchPath service to generate potential matches
+    const newMatches = matchPath(newItem, tops, bottoms, outer);
 
-    const matches = await matchPath(newItem, tops, bottoms, outer);
-
-    for (const match of matches) {
+    // Save all generated matches to the database
+    for (const match of newMatches) {
       await Match.findOneAndUpdate(
         {
           top: match.top,
@@ -27,70 +45,59 @@ exports.generateMatches = async (req, res) => {
       );
     }
 
-    res.json(matches);
+    res.json({ message: "Matches generated and saved successfully", newMatches });
+    
   } catch (error) {
-    console.error('Generate Matches Error:', error);
-    res.json({ error: 'Failed to generate matches' });
-  }
-};
-
-// CREATE manual match
-exports.createMatch = async (req, res) => {
-  try {
-    const match = new Match(req.body);
-    await match.save();
-    res.json(match);
-  } catch (error) {
-    console.error('Create Match Error:', error);
+    console.error('Generate and Save Matches Error:', error);
     res.json({ error: error.message });
   }
 };
 
 // GET all matches
 exports.getAllMatches = async (req, res) => {
-  try {
-    const matches = await Match.find({});
-    res.json(matches);
-  } catch (error) {
-    console.error('Get All Matches Error:', error);
-    res.json({ error: error.message });
-  }
+  try {
+    const matches = await Match.find({});
+    res.json(matches);
+  } catch (error) {
+    console.error('Get All Matches Error:', error);
+    res.json({ error: error.message });
+  }
 };
 
 // GET match by ID
 exports.getMatchById = async (req, res) => {
-  try {
-    const match = await Match.findById(req.params.id);
-    if (!match) return res.json({ error: "Match not found" });
-    res.json(match);
-  } catch (error) {
-    console.error('Get Match By ID Error:', error);
-    res.json({ error: error.message });
-  }
+  try {
+    const match = await Match.findById(req.params.id);
+    if (!match) return res.json({ error: "Match not found" });
+    res.json(match);
+  } catch (error) {
+    console.error('Get Match By ID Error:', error);
+    res.json({ error: error.message });
+  }
 };
 
 // UPDATE match by ID
 exports.updateMatch = async (req, res) => {
-  try {
-    const updated = await Match.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    if (!updated) return res.json({ error: "Match not found" });
-    res.json(updated);
-  } catch (error) {
-    console.error('Update Match Error:', error);
-    res.json({ error: error.message });
-  }
+  try {
+    const updated = await Match.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!updated) return res.json({ error: "Match not found" });
+    res.json(updated);
+  } catch (error) {
+    console.error('Update Match Error:', error);
+    res.json({ error: error.message });
+  }
 };
 
 // DELETE match by ID
 exports.deleteMatch = async (req, res) => {
-  try {
-    const deleted = await Match.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.json({ error: "Match not found" });
-    res.json({ message: "Match deleted" });
-  } catch (error) {
-    console.error('Delete Match Error:', error);
-    res.json({ error: error.message });
-  }
+  try {
+    const deleted = await Match.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.json({ error: "Match not found" });
+    res.json({ message: "Match deleted" });
+  } catch (error) {
+    console.error('Delete Match Error:', error);
+    res.json({ error: error.message });
+  }
 };
