@@ -5,9 +5,6 @@ const matchController = require('../controllers/matchController');
 // Manual match creation (optional)
 router.post('/', matchController.createMatch);
 
-// Route to generate and save matches
-router.post('/generate-and-save', matchController.generateAndSaveMatches);
-
 // Get all matches
 router.get('/', matchController.getAllMatches);
 

@@ -72,8 +72,6 @@ function matchStyle(newItem, matchItems) {
   // Since matchColor pushes to matches, no need to return anything here
 }
 
-
-
 function matchColor(newItem, matchItem) {
   function getColorScore(color1, color2) {
     if (colorMatches[color1]) {

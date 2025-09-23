@@ -1,5 +1,5 @@
 module.exports = {
-  white: { 3: ["black", "green", "blue"], 2: ["cream", "camel"], 1: [] },
+  white: { 3: ["white","black", "green", "blue"], 2: ["cream", "camel"], 1: [] },
   black: { 3: ["white", "cream", "camel"], 2: ["green"], 1: ["blue"] },
   green: { 3: ["white"], 2: ["black", "blue"], 1: ["cream", "camel"] },
   blue: { 3: ["white"], 2: ["green", "cream"], 1: ["black", "camel"] },

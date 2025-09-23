@@ -16,43 +16,6 @@ exports.createMatch = async (req, res) => {
   }
 };
 
-// New function to generate and save matches
-exports.generateAndSaveMatches = async (req, res) => {
-  try {
-    const { newItem } = req.body;
-    
-    // Fetch all existing items from the database
-    const [tops, bottoms, outer] = await Promise.all([
-      Top.find({}),
-      Bottom.find({}),
-      Outer.find({}),
-    ]);
-    
-    // Use the matchPath service to generate potential matches
-    const newMatches = matchPath(newItem, tops, bottoms, outer);
-
-    // Save all generated matches to the database
-    for (const match of newMatches) {
-      await Match.findOneAndUpdate(
-        {
-          top: match.top,
-          bottom: match.bottom,
-          outer: match.outer,
-          onepiece: match.onepiece,
-        },
-        match,
-        { upsert: true, new: true }
-      );
-    }
-
-    res.json({ message: "Matches generated and saved successfully", newMatches });
-    
-  } catch (error) {
-    console.error('Generate and Save Matches Error:', error);
-    res.json({ error: error.message });
-  }
-};
-
 // GET all matches
 exports.getAllMatches = async (req, res) => {
   try {
