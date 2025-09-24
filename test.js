@@ -1,6 +1,6 @@
 const matches = [];
 
-function matchPath(newItem, tops, bottoms, outer) {
+function matchPath(newItem, tops, bottoms, outer, onepiece) {
   let matchItem;
 
   if (newItem.type === "onepiece") {

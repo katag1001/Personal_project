@@ -12,9 +12,11 @@ router.get('/:type', clothingController.getAllItems);
 router.get('/:type/:id', clothingController.getItemById);
 
 // Update item by type and ID
-router.put('/:type/:id', clothingController.updateItemById);
+router.put('/:type/:id', clothingController.updateItem);
 
-// Delete item by type and ID
-router.delete('/:type/:id', clothingController.deleteItemById);
+	// Delete item by type and ID
+	router.delete('/:type/:id', clothingController.deleteItem)
 
 module.exports = router;
+
+

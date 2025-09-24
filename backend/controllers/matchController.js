@@ -1,66 +1,63 @@
 const Match = require('../models/Match');
-const Top = require('../models/Top');
-const Bottom = require('../models/Bottom');
-const Outer = require('../models/Outer');
-const { matchPath } = require('../services/matchService');
 
-// CREATE manual match
+// Create one match item
 exports.createMatch = async (req, res) => {
-  try {
-    const match = new Match(req.body);
-    await match.save();
-    res.json(match);
-  } catch (error) {
-    console.error('Create Match Error:', error);
-    res.json({ error: error.message });
-  }
+  try {
+    const match = new Match(req.body);
+    await match.save();
+    res.json(match);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
 };
 
-// GET all matches
+// Create multiple match items
+exports.createMatchesBulk = async (req, res) => {
+  console.log("Received bulk matches:", req.body);
+  try {
+    const matches = await Match.insertMany(req.body);
+    res.json(matches);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+};
+
+// Get all matches
 exports.getAllMatches = async (req, res) => {
-  try {
-    const matches = await Match.find({});
-    res.json(matches);
-  } catch (error) {
-    console.error('Get All Matches Error:', error);
-    res.json({ error: error.message });
-  }
+  try {
+    const matches = await Match.find();
+    res.json(matches);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
 };
 
-// GET match by ID
+// Get a match by ID
 exports.getMatchById = async (req, res) => {
-  try {
-    const match = await Match.findById(req.params.id);
-    if (!match) return res.json({ error: "Match not found" });
-    res.json(match);
-  } catch (error) {
-    console.error('Get Match By ID Error:', error);
-    res.json({ error: error.message });
-  }
+  try {
+    const match = await Match.findById(req.params.id);
+    res.json(match);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
 };
 
-// UPDATE match by ID
+// Update a match by ID
 exports.updateMatch = async (req, res) => {
-  try {
-    const updated = await Match.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    if (!updated) return res.json({ error: "Match not found" });
-    res.json(updated);
-  } catch (error) {
-    console.error('Update Match Error:', error);
-    res.json({ error: error.message });
-  }
+  try {
+    const match = await Match.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(match);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
 };
 
-// DELETE match by ID
+// Delete a match by ID
 exports.deleteMatch = async (req, res) => {
-  try {
-    const deleted = await Match.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.json({ error: "Match not found" });
-    res.json({ message: "Match deleted" });
-  } catch (error) {
-    console.error('Delete Match Error:', error);
-    res.json({ error: error.message });
-  }
+  try {
+    await Match.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Match deleted' });
+  } catch (error) {
+    res.json({ error: error.message });
+  }
 };
