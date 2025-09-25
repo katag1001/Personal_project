@@ -31,7 +31,7 @@ connectToDB();
 
 // Attach the API routes to specific endpoints
 app.use('/api/clothing', clothingRoutes);
-app.use('/api/match', matchRoutes);
+app.use('/api/match', matchRoutes);  // Use plural "matches" here to match your client POST
 
 // Start the server and listen for incoming requests
 app.listen(port, () => {

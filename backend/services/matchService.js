@@ -1,5 +1,5 @@
+const Match = require('../models/Match');
 const axios = require("axios");
-const matches = [];
 
 const colorPalettes = [
   ["navy", "soft white", "warm gray", "sage green", "dusty rose"],
@@ -8,7 +8,8 @@ const colorPalettes = [
   ["sage green", "mustard", "terracotta", "cream", "dusty rose"]
 ];
 
-function matchPath(newItem, tops, bottoms, outer, onepiece) {
+function matchPath(newItem, tops, bottoms, outer, onepiece, matches, context) {
+  console.log("Matching path for new item:", newItem.name);
   let matchItem;
 
   if (newItem.type === "onepiece") {
@@ -30,7 +31,7 @@ function matchPath(newItem, tops, bottoms, outer, onepiece) {
     };
 
     matches.push(result);
-    return matchSeason(newItem, outer, tops, bottoms, outer, onepiece);
+    return matchSeason(newItem, outer, matches, context);
   }
 
   if (newItem.type === "top") {
@@ -47,10 +48,11 @@ function matchPath(newItem, tops, bottoms, outer, onepiece) {
     return;
   }
 
-  return matchSeason(newItem, matchItem, tops, bottoms, outer, onepiece);
+  return matchSeason(newItem, matchItem, matches, context);
 }
 
-function matchSeason(newItem, matchItem, tops, bottoms, outer, onepiece) {
+function matchSeason(newItem, matchItem, matches, context) {
+  console.log("Matching season for new item:", newItem.name);
   const seasonalMatches = matchItem.filter(item =>
     (item.spring && newItem.spring) ||
     (item.summer && newItem.summer) ||
@@ -58,10 +60,12 @@ function matchSeason(newItem, matchItem, tops, bottoms, outer, onepiece) {
     (item.winter && newItem.winter)
   );
 
-  return matchStyle(newItem, seasonalMatches, tops, bottoms, outer, onepiece);
+  return matchStyle(newItem, seasonalMatches, matches, context);
 }
 
-function matchStyle(newItem, matchItems, tops, bottoms, outer, onepiece) {
+function matchStyle(newItem, matchItems, matches, context) {
+  console.log("Matching style for new item:", newItem.name);
+
   const normalize = s => Array.isArray(s) ? s : [s];
 
   for (const item of matchItems) {
@@ -73,16 +77,17 @@ function matchStyle(newItem, matchItems, tops, bottoms, outer, onepiece) {
     const patternedCount = combinedStyles.filter(s => s === "patterned").length;
 
     if (patternedCount <= 1) {
-      colorMatch(newItem, item, tops, bottoms, outer, onepiece);
+      colorMatch(newItem, item, matches, context);
     }
   }
 }
 
-function colorMatch(newItem, matchItem, tops, bottoms, outer, onepiece) {
+function colorMatch(newItem, matchItem, matches, context) {
+  console.log("Matching color for new item:", newItem.name, "with", matchItem.name);
   const combinedColors = [...new Set([...newItem.colors, ...matchItem.colors])];
 
   if (matching(combinedColors)) {
-    pushResult(newItem, matchItem, combinedColors, tops, bottoms, outer, onepiece);
+    pushResult(newItem, matchItem, matches, combinedColors, context);
   }
 
   function matching(combinedColors) {
@@ -92,7 +97,8 @@ function colorMatch(newItem, matchItem, tops, bottoms, outer, onepiece) {
   }
 }
 
-function pushResult(newItem, matchItem, combinedColors, tops, bottoms, outer, onepiece) {
+function pushResult(newItem, matchItem, matches, combinedColors, context) {
+  console.log("Pushing result for new item:", newItem.name, "with", matchItem.name);
   const min_temp = (newItem.min_temp + matchItem.min_temp) / 2;
   const max_temp = (newItem.max_temp + matchItem.max_temp) / 2;
 
@@ -124,7 +130,7 @@ function pushResult(newItem, matchItem, combinedColors, tops, bottoms, outer, on
       styles: [newItem.style, matchItem.style],
     });
     matches.push(result);
-    matchPath(result, tops, bottoms, outer, onepiece);
+    matchPath(result, context.tops, context.bottoms, context.outer, null, matches, context);
 
   } else if (newItem.type === "outerwear") {
     const result = createResult({
@@ -133,7 +139,7 @@ function pushResult(newItem, matchItem, combinedColors, tops, bottoms, outer, on
       styles: [matchItem.style, newItem.style],
     });
     matches.push(result);
-    matchPath(result, tops, bottoms, outer, onepiece);
+    matchPath(result, context.tops, context.bottoms, context.outer, null, matches, context);
 
   } else if (newItem.type === "match" && newItem.top && newItem.bottom && !newItem.outer) {
     const result = createResult({
@@ -163,13 +169,12 @@ function pushResult(newItem, matchItem, combinedColors, tops, bottoms, outer, on
   }
 }
 
-// ✅ Public function for controller
 async function processMatches(newItem, tops, bottoms, outer, onepiece) {
   console.log("Processing matches for new item:", newItem.name);
+  const matches = [];
+  const context = { tops, bottoms, outer }; // 👈 Context object
 
-  matches.length = 0; // Clear old results
-
-  matchPath(newItem, tops, bottoms, outer, onepiece);
+  matchPath(newItem, tops, bottoms, outer, onepiece, matches, context);
 
   if (matches.length === 0) {
     console.log("No matches to upload.");
@@ -177,14 +182,13 @@ async function processMatches(newItem, tops, bottoms, outer, onepiece) {
   }
 
   try {
-    const response = await axios.post("http://localhost:4444/api/matches/bulk", matches);
+    const response = await axios.post("http://localhost:4444/api/match/bulk", matches);
     console.log("Bulk matches created:", response.data);
   } catch (error) {
     console.error("Error uploading matches:", error.message);
   }
 }
 
-// ✅ Export
 module.exports = {
   processMatches
 };

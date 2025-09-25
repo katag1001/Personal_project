@@ -2,6 +2,7 @@ const Top = require('../models/Top');
 const Bottom = require('../models/Bottom');
 const Outerwear = require('../models/Outer');
 const OnePiece = require('../models/OnePiece');
+const Match = require('../models/Match');
 const { processMatches } = require('../services/matchService');
 
 
@@ -31,8 +32,9 @@ exports.createItem = async (req, res) => {
     ]);
 
     // Call matchPath with the new item and all clothing items
-    processMatches(item, tops, bottoms, outerwear, onepieces);
 
+    processMatches(item, tops, bottoms, outerwear, onepieces);
+    console.log("Match processing completed.");
     res.json(item);
   } catch (error) {
     res.json({ error: error.message });
