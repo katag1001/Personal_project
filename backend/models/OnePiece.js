@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const onePieceSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true},
   imageUrl: { type: String, default: "" },
   min_temp: { type: Number, required: true },
   max_temp: { type: Number, required: true },

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const matchSchema = new mongoose.Schema({
+const todaySchema = new mongoose.Schema({
   top: { type: String, default: null },
   bottom: { type: String, default: null },
   outer: { type: String, default: null },
@@ -15,6 +15,7 @@ const matchSchema = new mongoose.Schema({
   winter: { type: Boolean, required: true },
   styles: { type: [String], required: true },
   lastWornDate: { type: Date, default: null },
+  rank: { type: Number, default: null }, // Set to null by default
 });
 
-module.exports = mongoose.model('Match', matchSchema);
+module.exports = mongoose.model('Today', todaySchema);

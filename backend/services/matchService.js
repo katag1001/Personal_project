@@ -19,7 +19,6 @@ function matchPath(newItem, tops, bottoms, outer, onepiece, matches, context) {
       outer: null,
       onepiece: newItem.name,
       colors: newItem.colors,
-      colorScore: null,
       min_temp: newItem.min_temp,
       max_temp: newItem.max_temp,
       type: "match",
@@ -27,7 +26,8 @@ function matchPath(newItem, tops, bottoms, outer, onepiece, matches, context) {
       spring: newItem.spring,
       summer: newItem.summer,
       autumn: newItem.autumn,
-      winter: newItem.winter
+      winter: newItem.winter,
+      lastWornDate: new Date('1925-09-25T00:00:00.000Z')
     };
 
     matches.push(result);
@@ -40,9 +40,12 @@ function matchPath(newItem, tops, bottoms, outer, onepiece, matches, context) {
     matchItem = tops;
   } else if (newItem.type === "outerwear") {
     matchItem = tops;
+    matchSeason(newItem, matchItem, matches, context);
+    matchItem = onepiece;
+    return matchSeason(newItem, matchItem, matches, context);
   } else if (newItem.type === "match" && newItem.top && newItem.bottom && !newItem.outer) {
     matchItem = outer;
-  } else if (newItem.type === "match" && newItem.outer && !newItem.bottom) {
+  } else if (newItem.type === "match" && newItem.outer && newItem.top && !newItem.bottom) {
     matchItem = bottoms;
   } else {
     return;
@@ -109,7 +112,6 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
       outer: null,
       onepiece: null,
       colors: combinedColors,
-      colorScore: null,
       min_temp: parseFloat(min_temp.toFixed(1)),
       max_temp: parseFloat(max_temp.toFixed(1)),
       type: "match",
@@ -117,6 +119,7 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
       summer: newItem.summer && matchItem.summer,
       autumn: newItem.autumn && matchItem.autumn,
       winter: newItem.winter && matchItem.winter,
+      lastWornDate: new Date('1925-09-25T00:00:00.000Z'),
       ...overrides,
     };
   }
@@ -132,15 +135,23 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
     matches.push(result);
     matchPath(result, context.tops, context.bottoms, context.outer, null, matches, context);
 
-  } else if (newItem.type === "outerwear") {
+  } else if (newItem.type === "outerwear" && matchItem.type === "top") {
     const result = createResult({
       top: matchItem.name,
       outer: newItem.name,
       styles: [matchItem.style, newItem.style],
     });
-    matches.push(result);
+
     matchPath(result, context.tops, context.bottoms, context.outer, null, matches, context);
 
+  } else if (newItem.type === "outerwear" && matchItem.type === "onepiece") {
+    const result = createResult({
+      onepiece: matchItem.name,
+      outer: newItem.name,
+      styles: [...baseStyles, matchItem.style],
+    });
+    matches.push(result);
+  
   } else if (newItem.type === "match" && newItem.top && newItem.bottom && !newItem.outer) {
     const result = createResult({
       top: newItem.top,
@@ -150,7 +161,7 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
     });
     matches.push(result);
 
-  } else if (newItem.type === "match" && newItem.outer && !newItem.bottom) {
+  } else if (newItem.type === "match" && newItem.outer && newItem.top && !newItem.bottom) {
     const result = createResult({
       top: newItem.top,
       bottom: matchItem.name,

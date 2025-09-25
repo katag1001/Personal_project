@@ -15,12 +15,21 @@ function getModel(type) {
 }
 
 exports.createItem = async (req, res) => {
-  // Correctly get the 'type' from the request body, not the URL parameters
   const { type } = req.body;
   const Model = getModel(type);
   if (!Model) return res.json({ error: 'Invalid type' });
 
   try {
+    const duplicateCriteria = {
+      name: req.body.name
+    };
+
+    const existingItem = await Model.findOne(duplicateCriteria);
+
+    if (existingItem) {
+      return res.json({ error: 'Duplicate item already exists', item: existingItem });
+    }
+
     const item = new Model(req.body);
     await item.save();
 
@@ -31,11 +40,10 @@ exports.createItem = async (req, res) => {
       OnePiece.find()
     ]);
 
-    // Call matchPath with the new item and all clothing items
-
     processMatches(item, tops, bottoms, outerwear, onepieces);
     console.log("Match processing completed.");
     res.json(item);
+
   } catch (error) {
     res.json({ error: error.message });
   }

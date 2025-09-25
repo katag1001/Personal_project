@@ -6,6 +6,7 @@ require('dotenv').config();
 // Import the route handlers for your application
 const clothingRoutes = require('./routes/clothingRoutes');
 const matchRoutes = require('./routes/matchRoutes');
+const todayRoutes = require('./routes/todayRoutes');
 
 const app = express();
 const port = process.env.PORT || 4444;
@@ -29,9 +30,13 @@ async function connectToDB() {
 }
 connectToDB();
 
+// Mount the router at /today
+
+
 // Attach the API routes to specific endpoints
 app.use('/api/clothing', clothingRoutes);
-app.use('/api/match', matchRoutes);  // Use plural "matches" here to match your client POST
+app.use('/api/match', matchRoutes); 
+app.use('/api/today', todayRoutes);
 
 // Start the server and listen for incoming requests
 app.listen(port, () => {
