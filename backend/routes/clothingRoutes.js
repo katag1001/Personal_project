@@ -10,5 +10,3 @@ router.put('/:type/:id', clothingController.updateItem);
 router.delete('/:type/:id', clothingController.deleteItem);
 
 module.exports = router;
-
-module.exports = router;

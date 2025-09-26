@@ -1,10 +1,12 @@
 // src/todayClothes.jsx
 import React, { useState, useEffect } from 'react';
+import { useGeolocation } from "@uidotdev/usehooks";
 
 const BASE_URL = 'http://localhost:4444';
 const seasons = ['spring', 'summer', 'autumn', 'winter'];
 
 export default function TodayClothes() {
+  
   const [minTemp, setMinTemp] = useState('');
   const [maxTemp, setMaxTemp] = useState('');
   const [season, setSeason] = useState('spring');
@@ -13,6 +15,9 @@ export default function TodayClothes() {
   const [matches, setMatches] = useState([]);
 
   const [message, setMessage] = useState('');
+
+  // Geolocation hook
+  const location = useGeolocation();
 
   useEffect(() => {
     fetchMatches();
@@ -23,11 +28,7 @@ export default function TodayClothes() {
     try {
       const res = await fetch(`${BASE_URL}/api/match/`);
       const data = await res.json();
-      if (Array.isArray(data)) {
-        setMatches(data);
-      } else {
-        setMatches([]);
-      }
+      setMatches(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Failed to fetch matches:', err);
     }
@@ -88,7 +89,17 @@ export default function TodayClothes() {
 
   return (
     <div style={{ maxWidth: 700, margin: '2rem auto', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Today's Outfit Generator</h1>
+      {/* Geolocation Display */}
+      <section style={{ marginBottom: '1.5rem' }}>
+        {location.loading && <p>Loading location... (please enable location permissions)</p>}
+        {location.error && <p style={{ color: 'red' }}>Unable to access location: {location.error.message}</p>}
+        {location && location.latitude && location.longitude && (
+          <p>
+            Latitude: <strong>{location.latitude}</strong><br />
+            Longitude: <strong>{location.longitude}</strong>
+          </p>
+        )}
+      </section>
 
       <form onSubmit={handleSubmit} style={{ marginBottom: '2rem' }}>
         <div style={{ marginBottom: 12 }}>
