@@ -10,6 +10,7 @@ import BuildMatches from './pages/BuildMatches';
 import Clothes from './pages/Clothes';
 import Matches from './pages/Matches';
 import TodayOutfits from './pages/TodayOutfits';
+import User from './pages/User';
 import Register from './pages/Register';
 import Login from './pages/Login';
 
@@ -73,7 +74,6 @@ const App = () => {
 
   // ✅ Called to log out the user
   const logout = () => {
-    console.log('👋 Logging out...');
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
     setLoggedIn(false);
@@ -159,6 +159,15 @@ const App = () => {
           element={
             <ProtectedRoute loggedIn={loggedIn}>
               <TodayOutfits loggedIn={loggedIn} logout={logout} />
+            </ProtectedRoute>
+          }
+        />
+
+                <Route
+          path="/user"
+          element={
+            <ProtectedRoute loggedIn={loggedIn}>
+              <User loggedIn={loggedIn} logout={logout} />
             </ProtectedRoute>
           }
         />
