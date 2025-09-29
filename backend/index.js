@@ -7,6 +7,7 @@ require('dotenv').config();
 const clothingRoutes = require('./routes/clothingRoutes');
 const matchRoutes = require('./routes/matchRoutes');
 const todayRoutes = require('./routes/todayRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 const port = process.env.PORT || 4444;
@@ -15,6 +16,7 @@ const port = process.env.PORT || 4444;
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
 
 async function connectToDB() {
   try {
@@ -37,6 +39,7 @@ connectToDB();
 app.use('/api/clothing', clothingRoutes);
 app.use('/api/match', matchRoutes); 
 app.use('/api/today', todayRoutes);
+app.use('/api/users', userRoutes);
 
 // Start the server and listen for incoming requests
 app.listen(port, () => {
