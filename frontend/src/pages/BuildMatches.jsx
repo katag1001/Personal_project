@@ -1,10 +1,10 @@
 import React from 'react';
 import Header from '../components/header';
 
-const BuildMatches = () => {
+const BuildMatches = ({ loggedIn, logout }) => {
   return (
     <>
-      <Header />
+      <Header loggedIn={loggedIn} />
     </>
   );
 };

@@ -4,17 +4,16 @@ import Header from '../components/header';
 import ViewToday from '../components/viewToday';
 import GenerateToday from '../components/generateToday';
 
-const TodayOutfits = () => {
+const TodayOutfits = ({ loggedIn, logout }) => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleGenerated = () => {
-    // Increment refresh key to trigger re-fetch in ViewToday
     setRefreshKey((prev) => prev + 1);
   };
 
   return (
     <>
-      <Header />
+      <Header loggedIn={loggedIn} />
       <GenerateToday onGenerated={handleGenerated} />
       <ViewToday refreshKey={refreshKey} />
     </>

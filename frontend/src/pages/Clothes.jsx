@@ -6,12 +6,12 @@ import ViewToday from '../components/viewToday';
 import { Link } from 'react-router-dom';
 
 
-const Clothes = () => {
+const Clothes = ({ loggedIn, logout }) => {
   return (
     <>
-      <Header />
-      <Link to="/buildmatches">
-        <button>Build Matches</button>
+      <Header loggedIn={loggedIn} />
+      <Link to="/addclothes">
+        <button>Upload Clothes</button>
       </Link>
       <ViewClothes />
       <ViewMatches />

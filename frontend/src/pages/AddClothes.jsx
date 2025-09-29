@@ -1,10 +1,10 @@
 import React from 'react';
 import Header from '../components/header';
 
-const AddClothes = () => {
+const AddClothes = ({ loggedIn, logout }) => {
   return (
     <>
-      <Header />
+      <Header loggedIn={loggedIn} />
     </>
   );
 };

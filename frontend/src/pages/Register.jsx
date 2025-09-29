@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Header from '../components/header';
 
-const Register = () => {
+const Register = ({ loggedIn, logout }) => {
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -28,7 +29,9 @@ const Register = () => {
   };
 
   return (
+    
     <div>
+      <Header loggedIn={loggedIn} />
       <h2>Register</h2>
       {message && <p>{message}</p>}
       <form onSubmit={handleSubmit}>

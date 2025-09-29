@@ -70,13 +70,20 @@ const login = async (req, res) => {
 };
 
 const verify_token = (req, res) => {
-  console.log(req.headers.authorization);
-  const token = req.headers.authorization;
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.json({ ok: false, message: "No token provided" });
+  }
+
+  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : authHeader;
+
   jwt.verify(token, jwt_secret, (err, succ) => {
-    err
-      ? res.json({ ok: false, message: "Token is corrupted" })
-      : res.json({ ok: true, succ });
+    if (err) {
+      return res.json({ ok: false, message: "Token is corrupted" });
+    }
+    res.json({ ok: true, succ });
   });
 };
+
 
 module.exports = { register, login, verify_token };

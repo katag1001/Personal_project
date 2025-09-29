@@ -6,7 +6,6 @@ const Header = ({ loggedIn }) => {
     <header className="header">
       <nav className="navbar">
         <div className="navbar-logo">
-          {/* You can put a logo here if you want */}
         </div>
 
         {loggedIn ? (

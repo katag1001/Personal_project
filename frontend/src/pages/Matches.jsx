@@ -2,10 +2,10 @@ import React from 'react';
 import Header from '../components/header';
 import { Link } from 'react-router-dom';
 
-const Matches = () => {
+const Matches = ({ loggedIn, logout }) => {
   return (
     <>
-      <Header />
+      <Header loggedIn={loggedIn} />
       <Link to="/buildmatches">
         <button>Build Matches</button>
       </Link>
