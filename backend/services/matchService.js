@@ -27,6 +27,8 @@ function matchPath(newItem, tops, bottoms, outer, onepiece, matches, context) {
       summer: newItem.summer,
       autumn: newItem.autumn,
       winter: newItem.winter,
+      tags: null,
+      rejected: false,
       lastWornDate: new Date('1925-09-25T00:00:00.000Z')
     };
 
@@ -115,6 +117,8 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
       min_temp: parseFloat(min_temp.toFixed(1)),
       max_temp: parseFloat(max_temp.toFixed(1)),
       type: "match",
+      tags: null,
+      rejected: false,
       spring: newItem.spring && matchItem.spring,
       summer: newItem.summer && matchItem.summer,
       autumn: newItem.autumn && matchItem.autumn,

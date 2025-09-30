@@ -2,6 +2,7 @@ import React from 'react';
 import Header from '../components/header';
 import ViewMatches from '../components/viewMatches';
 import { Link } from 'react-router-dom';
+import RejectedMatches from '../components/rejectedMatches';
 
 const Matches = ({ loggedIn, logout }) => {
   return (
@@ -11,6 +12,7 @@ const Matches = ({ loggedIn, logout }) => {
         <button>Build Matches</button>
       </Link>
       <ViewMatches />
+      <RejectedMatches />
     </>
   );
 };

@@ -8,5 +8,6 @@ router.get('/:type', clothingController.getAllItems);
 router.get('/:type/:id', clothingController.getItemById);
 router.put('/:type/:id', clothingController.updateItem);
 router.delete('/:type/:id', clothingController.deleteItem);
+router.get('/:type/:name', clothingController.getNameById);
 
 module.exports = router;

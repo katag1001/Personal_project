@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const todaySchema = new mongoose.Schema({
+  _id: { type: mongoose.Schema.Types.ObjectId, required: true, auto: false }, // Keep original Match ID
   top: { type: String, default: null },
   bottom: { type: String, default: null },
   outer: { type: String, default: null },
@@ -14,8 +15,10 @@ const todaySchema = new mongoose.Schema({
   autumn: { type: Boolean, required: true },
   winter: { type: Boolean, required: true },
   styles: { type: [String], required: true },
+  tags: { type: [String], required: false },
+  rejected: { type: Boolean, required: true },
   lastWornDate: { type: Date, default: null },
-  rank: { type: Number, default: null }, // Set to null by default
+  rank: { type: Number, default: null },
 });
 
 module.exports = mongoose.model('Today', todaySchema);

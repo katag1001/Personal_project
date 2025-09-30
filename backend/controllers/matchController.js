@@ -2,16 +2,18 @@ const Match = require('../models/Match');
 
 // Create one match item
 exports.createMatch = async (req, res) => {
+   console.log('Received body:', req.body);
   try {
     const match = new Match(req.body);
     await match.save();
+    console.log('Match saved to DB:', match); 
     res.json(match);
   } catch (error) {
     res.json({ error: error.message });
   }
 };
 
-// Create multiple match items (only used for automatic - no front end)
+// Create multiple match items (only used for automatic from the match algorithm - no front end)
 exports.createMatchesBulk = async (req, res) => {
   console.log("Received bulk matches:", req.body);
   try {

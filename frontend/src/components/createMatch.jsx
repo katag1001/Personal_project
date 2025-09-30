@@ -41,35 +41,42 @@ const CreateMatch = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const payload = {
-      ...formData,
-      min_temp: Number(formData.min_temp),
-      max_temp: Number(formData.max_temp),
-      styles: [], // Force empty array
-      type: 'match', // Force type to 'match'
-      lastWornDate: '1925-09-25', // Set historical date
-      top: formData.top || null,
-      bottom: formData.bottom || null,
-      outer: formData.outer || null,
-      onepiece: formData.onepiece || null,
-    };
-
-    try {
-      const res = await fetch('/api/match/matches', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await res.json();
-      setResponse(result);
-    } catch (err) {
-      setResponse({ error: err.message });
-    }
+  const payload = {
+    top: formData.top || null,
+    bottom: formData.bottom || null,
+    outer: formData.outer || null,
+    onepiece: formData.onepiece || null,
+    colors: formData.colors || [],
+    min_temp: Number(formData.min_temp),
+    max_temp: Number(formData.max_temp),
+    spring: formData.spring,
+    summer: formData.summer,
+    autumn: formData.autumn,
+    winter: formData.winter,
+    styles: [],          
+    type: 'match',       
+    lastWornDate: '1925-09-25',
+    tags: [],            
+    rejected: false      
   };
+
+  try {
+    const res = await fetch('/api/match/matches', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+    setResponse(result);
+  } catch (err) {
+    setResponse({ error: err.message });
+  }
+};
+
 
   return (
     <div>
@@ -79,7 +86,7 @@ const CreateMatch = () => {
         <label>Bottom: <input type="text" name="bottom" value={formData.bottom} onChange={handleChange} /></label><br />
         <label>Outer: <input type="text" name="outer" value={formData.outer} onChange={handleChange} /></label><br />
         <label>Onepiece: <input type="text" name="onepiece" value={formData.onepiece} onChange={handleChange} /></label><br />
-
+        
         <label>Colors:</label><br />
         <select name="colors" multiple value={formData.colors} onChange={handleChange} size={colorOptions.length}>
           {colorOptions.map(color => (
@@ -94,11 +101,6 @@ const CreateMatch = () => {
         <label>Summer: <input type="checkbox" name="summer" checked={formData.summer} onChange={handleChange} /></label><br />
         <label>Autumn: <input type="checkbox" name="autumn" checked={formData.autumn} onChange={handleChange} /></label><br />
         <label>Winter: <input type="checkbox" name="winter" checked={formData.winter} onChange={handleChange} /></label><br /><br />
-
-        {/* Hidden Inputs (optional if you want to be explicit) */}
-        <input type="hidden" name="type" value="match" />
-        <input type="hidden" name="styles" value="" />
-        <input type="hidden" name="lastWornDate" value="1925-09-25" />
 
         <button type="submit">Submit Match</button>
       </form>

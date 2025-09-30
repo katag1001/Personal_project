@@ -14,6 +14,8 @@ const matchSchema = new mongoose.Schema({
   autumn: { type: Boolean, required: true },
   winter: { type: Boolean, required: true },
   styles: { type: [String], required: true },
+  tags: { type: [String], required: false },
+  rejected: { type: Boolean, required: true },
   lastWornDate: { type: Date, default: null },
 });
 

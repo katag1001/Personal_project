@@ -76,6 +76,20 @@ exports.getItemById = async (req, res) => {
   }
 };
 
+exports.getItemByName = async (req, res) => {
+  const { type, name } = req.params;
+  const Model = getModel(type);
+  if (!Model) return res.json({ error: 'Invalid type' });
+
+  try {
+    const item = await Model.findOne({ name: name });
+    if (!item) return res.json({ message: `${type} with name "${name}" not found` });
+    res.json(item);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+};
+
 exports.updateItem = async (req, res) => {
   const { type, id } = req.params;
   const Model = getModel(type);

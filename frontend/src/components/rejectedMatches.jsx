@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const ViewMatches = () => {
+const RejectedMatches = () => {
   const [matches, setMatches] = useState([]);
   const [error, setError] = useState(null);
 
@@ -45,16 +45,44 @@ const ViewMatches = () => {
     }
   };
 
+  // Reinstate match (set rejected to false)
+  const handleReinstate = async (id) => {
+    try {
+      const response = await fetch(`/api/match/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rejected: false }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        setError(data.error);
+      } else {
+        // Remove reinstated match from the rejected list
+        setMatches((prevMatches) =>
+          prevMatches.map((match) =>
+            match._id === id ? { ...match, rejected: false } : match
+          )
+        );
+      }
+    } catch (err) {
+      setError('Failed to reinstate match');
+    }
+  };
+
   return (
     <>
-      <h2>All Available Outfit Matches</h2>
+      <h2>Rejected Outfit Matches</h2>
 
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
 
-      {matches.length === 0 && !error && <p>No matches found.</p>}
+      {matches.filter(match => match.rejected).length === 0 && !error && <p>No rejected matches found.</p>}
 
       <ul>
-       {matches.filter(match => !match.rejected).map((match) => (
+        {matches.filter(match => match.rejected).map((match) => (
           <li key={match._id} style={{ marginBottom: '1.5rem' }}>
             <p><strong>Top:</strong> {match.top || 'N/A'}</p>
             <p><strong>Bottom:</strong> {match.bottom || 'N/A'}</p>
@@ -73,7 +101,23 @@ const ViewMatches = () => {
             <p><strong>Styles:</strong> {match.styles.join(', ')}</p>
             <p><strong>Last Worn:</strong> {match.lastWornDate ? new Date(match.lastWornDate).toLocaleDateString() : 'Never'}</p>
 
-            {/* Delete button (no confirmation) */}
+            {/* Reinstate button */}
+            <button
+              onClick={() => handleReinstate(match._id)}
+              style={{
+                marginRight: '1rem',
+                marginTop: '0.5rem',
+                color: 'white',
+                backgroundColor: 'green',
+                border: 'none',
+                padding: '0.5rem 1rem',
+                cursor: 'pointer'
+              }}
+            >
+              Reinstate Match
+            </button>
+
+            {/* Delete button */}
             <button
               onClick={() => handleDelete(match._id)}
               style={{
@@ -94,4 +138,4 @@ const ViewMatches = () => {
   );
 };
 
-export default ViewMatches;
+export default RejectedMatches;

@@ -27,8 +27,9 @@ exports.createToday = async (req, res) => {
 
     // ✅ Find matching outfits
     const matches = await Match.find({
-      min_temp: { $gte: min_temp_today }, // match min temp greater or equal today's min
-      max_temp: { $lte: max_temp_today }, // match max temp less or equal today's max
+      min_temp: { $gte: min_temp_today },
+      max_temp: { $lte: max_temp_today },
+      rejected: false, 
       ...seasonFilter,
     });
 
@@ -47,10 +48,10 @@ exports.createToday = async (req, res) => {
       });
     }
 
-    // ✅ Prepare matches to insert
+    // ✅ Prepare matches to insert (KEEP original _id)
     const todayOutfits = matches.map((match) => {
       const matchObj = match.toObject();
-      delete matchObj._id;
+      // KEEP matchObj._id here - do NOT delete it
       return {
         ...matchObj,
         rank: 1,
