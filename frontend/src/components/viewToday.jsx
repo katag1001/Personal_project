@@ -1,73 +1,87 @@
 import React, { useEffect, useState } from 'react';
 
-const ViewToday = ({ refreshKey }) => {
+const ViewToday = () => {
   const [outfits, setOutfits] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState(null);  // separate from error, for user info
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log('[ViewToday] useEffect triggered. refreshKey =', refreshKey);
-
-    const fetchTodayOutfits = async () => {
+    const fetchOutfits = async () => {
       try {
-        const response = await fetch('/api/today/get');
+        const response = await fetch('/api/today/get'); // Uses Vite proxy
         const data = await response.json();
 
-        console.log('[ViewToday] Fetched response:', data);
-
-        if (data.message) {
-          // Server responded with a message instead of outfit data
-          console.warn('[ViewToday] Server returned message:', data.message);
-          setError(data.message);
-          setOutfits([]);
-        } else if (Array.isArray(data)) {
-          // Got an array of outfits
-          console.log('[ViewToday] Updating outfits with:', data);
-          setOutfits(data);
-          setError(null);
+        if (response.ok) {
+          if (Array.isArray(data)) {
+            setOutfits(data);
+            setMessage(null);
+            setError(null);
+          } else if (data.message) {
+            // Clear outfits when only a message is returned
+            setOutfits([]);
+            setMessage(data.message);
+            setError(null);
+          } else {
+            setOutfits([]);
+            setMessage(null);
+            setError('Unexpected response format.');
+          }
         } else {
-          // Unexpected response structure
-          console.error('[ViewToday] Unexpected response format:', data);
-          setError('Unexpected response from server.');
           setOutfits([]);
+          setMessage(null);
+          setError(data.message || 'Failed to fetch outfits.');
         }
       } catch (err) {
-        console.error('[ViewToday] Fetch error:', err);
-        setError('Failed to fetch today\'s outfits.');
         setOutfits([]);
+        setMessage(null);
+        setError('Error fetching outfits: ' + err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchTodayOutfits();
-  }, [refreshKey]); // ✅ Triggers fetch when refreshKey changes
+    fetchOutfits();
+  }, []);
+
+  if (loading) return <p>Loading outfits for today...</p>;
+  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+  if (message) return <p>{message}</p>;
+  if (outfits.length === 0) return <p>No outfits saved for today.</p>;
 
   return (
-    <div>
-      <h2>Today's Outfit Recommendations</h2>
-
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-      {!error && outfits.length === 0 && <p>No outfits found.</p>}
-
-      <ul>
+    <div style={{ maxWidth: 700, margin: '2rem auto', fontFamily: 'Arial, sans-serif' }}>
+      <h2>Today's Outfits</h2>
+      <ul style={{ listStyleType: 'none', padding: 0 }}>
         {outfits.map((outfit, index) => (
-          <li key={outfit._id || index} style={{ marginBottom: '1.5rem' }}>
-            <p><strong>Rank:</strong> {outfit.rank ?? 'N/A'}</p>
-            <p><strong>Top:</strong> {outfit.top || 'N/A'}</p>
-            <p><strong>Bottom:</strong> {outfit.bottom || 'N/A'}</p>
-            <p><strong>Outerwear:</strong> {outfit.outer || 'N/A'}</p>
-            <p><strong>One-piece:</strong> {outfit.onepiece || 'N/A'}</p>
-            <p><strong>Colors:</strong> {outfit.colors?.join(', ') || 'N/A'}</p>
-            <p><strong>Temperature:</strong> {outfit.min_temp}° - {outfit.max_temp}°</p>
-            <p><strong>Type:</strong> {outfit.type || 'N/A'}</p>
-            <p><strong>Seasons:</strong> 
-              {[
-                outfit.spring && 'Spring',
-                outfit.summer && 'Summer',
-                outfit.autumn && 'Autumn',
-                outfit.winter && 'Winter',
-              ].filter(Boolean).join(', ') || 'N/A'}
-            </p>
-            <p><strong>Styles:</strong> {outfit.styles?.join(', ') || 'N/A'}</p>
-            <p><strong>Last Worn:</strong> {outfit.lastWornDate ? new Date(outfit.lastWornDate).toLocaleDateString() : 'Never'}</p>
+          <li
+            key={outfit._id || index}
+            style={{
+              border: '1px solid #ccc',
+              borderRadius: 8,
+              padding: '1rem',
+              marginBottom: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem',
+            }}
+          >
+            {outfit.image_url && (
+              <img
+                src={outfit.image_url}
+                alt={outfit.name || 'Outfit'}
+                style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8 }}
+              />
+            )}
+            <div>
+              <h3 style={{ margin: 0 }}>{outfit.name || 'Unnamed Outfit'}</h3>
+              <p style={{ margin: '0.2rem 0' }}>
+                Min Temp: {outfit.min_temp}°C | Max Temp: {outfit.max_temp}°C | Rank: {outfit.rank}
+              </p>
+              <p style={{ margin: 0 }}>Seasons: {['spring', 'summer', 'autumn', 'winter']
+                .filter(season => outfit[season])
+                .join(', ')}</p>
+            </div>
           </li>
         ))}
       </ul>

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import Header from '../components/header';
-import TodayOutfitsPage from '../components/todayOutfitsPage';
-import ViewMatches from '../components/viewMatches';
-
+import AutoWeather from '../components/autoWeather';
+import ViewToday from '../components/viewToday';  
 
 const TodayOutfits = ({ loggedIn, logout }) => {
 
   return (
     <>
       <Header loggedIn={loggedIn} />
-      <TodayOutfitsPage />
-      <ViewMatches />
+      <AutoWeather />
+      <ViewToday />
+
     </>
   );
 };
