@@ -11,7 +11,7 @@ exports.createMatch = async (req, res) => {
   }
 };
 
-// Create multiple match items
+// Create multiple match items (only used for automatic - no front end)
 exports.createMatchesBulk = async (req, res) => {
   console.log("Received bulk matches:", req.body);
   try {

@@ -1,13 +1,26 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+const colorOptions = [
+  "navy",
+  "soft white",
+  "warm gray",
+  "sage green",
+  "dusty rose",
+  "mustard",
+  "terracotta",
+  "cream"
+];
+
+const styleOptions = ["plain", "patterned"];
+
 const CreateClothes = () => {
   const [formData, setFormData] = useState({
     name: '',
     imageUrl: '',
     min_temp: '',
     max_temp: '',
-    colors: '',
+    colors: [],
     styles: '',
     type: 'top',
     spring: false,
@@ -19,11 +32,20 @@ const CreateClothes = () => {
   const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    const { name, value, type, checked, multiple, options } = e.target;
+
+    if (multiple) {
+      const selected = Array.from(options).filter(o => o.selected).map(o => o.value);
+      setFormData(prev => ({
+        ...prev,
+        [name]: selected
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -33,8 +55,8 @@ const CreateClothes = () => {
         ...formData,
         min_temp: Number(formData.min_temp),
         max_temp: Number(formData.max_temp),
-        colors: formData.colors.split(',').map(c => c.trim()),
-        styles: formData.styles.split(',').map(s => s.trim()),
+        colors: formData.colors,
+        styles: [formData.styles], // wrap in array for consistency
       };
 
       const res = await axios.post('/api/clothing', payload);
@@ -67,10 +89,21 @@ const CreateClothes = () => {
           Max Temp: <input name="max_temp" type="number" value={formData.max_temp} onChange={handleChange} required />
         </label><br />
         <label>
-          Colors (comma-separated): <input name="colors" value={formData.colors} onChange={handleChange} required />
+          Colors:
+          <select name="colors" multiple value={formData.colors} onChange={handleChange}>
+            {colorOptions.map(color => (
+              <option key={color} value={color}>{color}</option>
+            ))}
+          </select>
         </label><br />
         <label>
-          Styles (comma-separated): <input name="styles" value={formData.styles} onChange={handleChange} required />
+          Style:
+          <select name="styles" value={formData.styles} onChange={handleChange} required>
+            <option value="">Select a style</option>
+            {styleOptions.map(style => (
+              <option key={style} value={style}>{style}</option>
+            ))}
+          </select>
         </label><br />
         <label>
           Type:

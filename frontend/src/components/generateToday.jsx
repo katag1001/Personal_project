@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const GenerateToday = ({ onGenerated }) => {
+const GenerateToday = ({ onGenerated, autoMin, autoMax, autoSeason }) => {
   const [minTemp, setMinTemp] = useState('');
   const [maxTemp, setMaxTemp] = useState('');
   const [season, setSeason] = useState('spring');
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
+
+  // Set defaults from AutoWeather when they change
+  useEffect(() => {
+    if (autoMin !== '') setMinTemp(autoMin);
+    if (autoMax !== '') setMaxTemp(autoMax);
+    if (autoSeason) setSeason(autoSeason);
+  }, [autoMin, autoMax, autoSeason]);
 
   const generateOutfits = async () => {
     setMessage(null);
@@ -29,7 +36,7 @@ const GenerateToday = ({ onGenerated }) => {
       if (data.message) {
         if (data.data) {
           setMessage(data.message);
-          onGenerated?.(); // ✅ Trigger parent to refresh ViewToday
+          onGenerated?.();
         } else {
           setError(data.message);
         }
