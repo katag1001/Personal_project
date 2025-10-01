@@ -96,9 +96,40 @@ exports.updateItem = async (req, res) => {
   if (!Model) return res.json({ error: 'Invalid type' });
 
   try {
-    const item = await Model.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
-    if (!item) return res.json({ message: `${type} not found` });
-    res.json(item);
+    // Step 1: Find the existing item to get its current name
+    const existingItem = await Model.findById(id);
+    if (!existingItem) return res.json({ message: `${type} not found` });
+
+    const oldName = existingItem.name;
+
+    // Step 2: Update the item
+    const updatedItem = await Model.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    // Step 3: If type is relevant, delete related matches that used the old name
+    const allowedFields = ['top', 'bottom', 'outer', 'onepiece'];
+    if (allowedFields.includes(type)) {
+      const filter = {};
+      filter[type] = oldName;
+
+      const matchDeleteResult = await Match.deleteMany(filter);
+      console.log(`Deleted ${matchDeleteResult.deletedCount} matches using this ${type}`);
+
+      // Step 4: Process new matches using the updated item
+      const [tops, bottoms, outerwear, onepieces] = await Promise.all([
+        Top.find(),
+        Bottom.find(),
+        Outerwear.find(),
+        OnePiece.find()
+      ]);
+
+      processMatches(updatedItem, tops, bottoms, outerwear, onepieces);
+      console.log("Match processing completed after update.");
+    }
+
+    res.json(updatedItem);
   } catch (error) {
     res.json({ error: error.message });
   }
@@ -110,10 +141,28 @@ exports.deleteItem = async (req, res) => {
   if (!Model) return res.json({ error: 'Invalid type' });
 
   try {
-    const item = await Model.findByIdAndDelete(id);
+    // Step 1: Find the item first
+    const item = await Model.findById(id);
     if (!item) return res.json({ message: `${type} not found` });
-    res.json({ message: `${type} deleted successfully` });
+
+    const pieceValue = item.name
+
+    // Step 2: Delete all matches that use this item
+    const allowedFields = ['top', 'bottom', 'outer', 'onepiece'];
+    if (allowedFields.includes(type)) {
+      const filter = {};
+      filter[type] = pieceValue;
+
+      const matchDeleteResult = await Match.deleteMany(filter);
+      console.log(`Deleted ${matchDeleteResult.deletedCount} matches using this ${type}`);
+    }
+
+    // Step 3: Delete the item itself
+    await Model.findByIdAndDelete(id);
+
+    res.json({ message: `${type} and related matches deleted successfully` });
   } catch (error) {
     res.json({ error: error.message });
   }
 };
+

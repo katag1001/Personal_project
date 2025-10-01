@@ -7,6 +7,7 @@ import axios from 'axios';
 import Homepage from './pages/Homepage';
 import AddClothes from './pages/AddClothes';
 import BuildMatches from './pages/BuildMatches';
+import OldMatches from './pages/OldMatches';
 import Clothes from './pages/Clothes';
 import Matches from './pages/Matches';
 import TodayOutfits from './pages/TodayOutfits';
@@ -132,6 +133,15 @@ const App = () => {
           element={
             <ProtectedRoute loggedIn={loggedIn}>
               <BuildMatches loggedIn={loggedIn} logout={logout} />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/oldmatches"
+          element={
+            <ProtectedRoute loggedIn={loggedIn}>
+              <OldMatches loggedIn={loggedIn} logout={logout} />
             </ProtectedRoute>
           }
         />

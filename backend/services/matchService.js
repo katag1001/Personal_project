@@ -29,6 +29,8 @@ function matchPath(newItem, tops, bottoms, outer, onepiece, matches, context) {
       winter: newItem.winter,
       tags: null,
       rejected: false,
+      userMade: false,
+      username: null,
       lastWornDate: new Date('1925-09-25T00:00:00.000Z')
     };
 
@@ -123,6 +125,8 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
       summer: newItem.summer && matchItem.summer,
       autumn: newItem.autumn && matchItem.autumn,
       winter: newItem.winter && matchItem.winter,
+      userMade: false,
+      username: null,
       lastWornDate: new Date('1925-09-25T00:00:00.000Z'),
       ...overrides,
     };
@@ -134,7 +138,10 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
     const result = createResult({
       top: newItem.type === "top" ? newItem.name : matchItem.name,
       bottom: newItem.type === "bottom" ? newItem.name : matchItem.name,
-      styles: [newItem.style, matchItem.style],
+      styles: [
+  ...(Array.isArray(newItem.styles) ? newItem.styles : (newItem.style ? [newItem.style] : [])),
+  ...(Array.isArray(matchItem.styles) ? matchItem.styles : (matchItem.style ? [matchItem.style] : []))
+],
     });
     matches.push(result);
     matchPath(result, context.tops, context.bottoms, context.outer, null, matches, context);
@@ -178,7 +185,10 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
     const result = createResult({
       onepiece: newItem.name,
       outer: matchItem.name,
-      styles: [newItem.style, matchItem.style],
+      styles: [
+  ...(Array.isArray(newItem.styles) ? newItem.styles : (newItem.style ? [newItem.style] : [])),
+  ...(Array.isArray(matchItem.styles) ? matchItem.styles : (matchItem.style ? [matchItem.style] : []))
+],
     });
     matches.push(result);
   }
@@ -187,7 +197,7 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
 async function processMatches(newItem, tops, bottoms, outer, onepiece) {
   console.log("Processing matches for new item:", newItem.name);
   const matches = [];
-  const context = { tops, bottoms, outer }; // 👈 Context object
+  const context = { tops, bottoms, outer }; // 
 
   matchPath(newItem, tops, bottoms, outer, onepiece, matches, context);
 

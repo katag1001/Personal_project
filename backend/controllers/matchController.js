@@ -63,3 +63,27 @@ exports.deleteMatch = async (req, res) => {
     res.json({ error: error.message });
   }
 };
+
+// For when the piece is deleted - delete all matches containing that piece
+exports.deleteMatchesByPiece = async (req, res) => {
+  try {
+    const { pieceType, pieceValue } = req.body;
+
+    const allowedFields = ['top', 'bottom', 'outer', 'onepiece'];
+    if (!allowedFields.includes(pieceType)) {
+      return res.json({ error: 'Invalid piece type' });
+    }
+
+    const filter = {};
+    filter[pieceType] = pieceValue;
+
+    const result = await Match.deleteMany(filter);
+
+    res.json({ message: `Deleted ${result.deletedCount} matches` });
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+};
+
+
+

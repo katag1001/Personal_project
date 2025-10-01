@@ -19,6 +19,8 @@ const todaySchema = new mongoose.Schema({
   rejected: { type: Boolean, required: true },
   lastWornDate: { type: Date, default: null },
   rank: { type: Number, default: null },
+  userMade: { type: Boolean, required: true },
+  username: { type: String, required: false, default: null },
 });
 
 module.exports = mongoose.model('Today', todaySchema);

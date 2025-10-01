@@ -1,7 +1,7 @@
 // AddClothes.js
 import React from 'react';
 import Header from '../components/header';
-import CreateClothes from '../components/createClothes';
+import CreateClothes from '../components/clothes/createClothes';
 
 
 const AddClothes = ({ loggedIn }) => {

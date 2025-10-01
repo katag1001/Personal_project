@@ -109,14 +109,26 @@ const ViewClothes = () => {
   return (
     <>
       <h2>Select Clothing Type</h2>
+<div style={{ marginBottom: '1rem' }}>
+  {clothingTypes.map((t) => (
+    <button
+      key={t}
+      onClick={() => setType(t)}
+      style={{
+        marginRight: '10px',
+        padding: '8px 12px',
+        backgroundColor: type === t ? '#007BFF' : '#e0e0e0',
+        color: type === t ? 'white' : 'black',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+      }}
+    >
+      {t.charAt(0).toUpperCase() + t.slice(1)}
+    </button>
+  ))}
+</div>
 
-      <select value={type} onChange={(e) => setType(e.target.value)}>
-        {clothingTypes.map((t) => (
-          <option key={t} value={t}>
-            {t.charAt(0).toUpperCase() + t.slice(1)}
-          </option>
-        ))}
-      </select>
 
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
 
@@ -126,6 +138,7 @@ const ViewClothes = () => {
           <li key={item._id} style={{ marginBottom: '1rem' }}>
             <strong>{item[type]}</strong>
             <p>
+              Name: {item.name} <br />
               Colors: {item.colors.join(', ')} <br />
               Temp: {item.min_temp}° - {item.max_temp}° <br />
               Type: {item.type} <br />

@@ -9,5 +9,4 @@ router.get('/:id', matchController.getMatchById);
 router.put('/:id', matchController.updateMatch);
 router.delete('/:id', matchController.deleteMatch);
 
-
 module.exports = router;
