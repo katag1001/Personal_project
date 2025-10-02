@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import UploadImages from './uploadPics';  
 
 const colorOptions = [
   "navy",
@@ -80,7 +81,7 @@ const CreateClothes = () => {
           Name: <input name="name" value={formData.name} onChange={handleChange} required />
         </label><br />
         <label>
-          Image URL: <input name="imageUrl" value={formData.imageUrl} onChange={handleChange} />
+          Image URL: <UploadImages /> 
         </label><br />
         <label>
           Min Temp: <input name="min_temp" type="number" value={formData.min_temp} onChange={handleChange} required />
