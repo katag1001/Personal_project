@@ -27,10 +27,13 @@ const CreateClothes = () => {
     spring: false,
     summer: false,
     autumn: false,
-    winter: false
+    winter: false,
+    username: localStorage.getItem('user')
   });
+  console.log('👤 Current username in formData:', formData);
 
   const [message, setMessage] = useState('');
+ 
 
   const handleChange = (e) => {
     const { name, value, type, checked, multiple, options } = e.target;
@@ -80,9 +83,10 @@ const CreateClothes = () => {
         <label>
           Name: <input name="name" value={formData.name} onChange={handleChange} required />
         </label><br />
-        <label>
-          Image URL: <UploadImages /> 
-        </label><br />
+        <div>
+          Image URL: <UploadImages setFormData={setFormData} formData={formData} /> 
+          {formData.imageUrl && ( <img src={formData.imageUrl} alt="Clothing" style={{ maxWidth: '100px', display: 'block', marginTop: '10px' }} />)}
+        </div><br />
         <label>
           Min Temp: <input name="min_temp" type="number" value={formData.min_temp} onChange={handleChange} required />
         </label><br />

@@ -24,7 +24,7 @@ const URL = '/api';
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState('');
-  const [isCheckingToken, setIsCheckingToken] = useState(true); // <-- new state
+  const [isCheckingToken, setIsCheckingToken] = useState(true); 
 
   // 🔁 Check token and verify on app load
   useEffect(() => {
@@ -49,6 +49,7 @@ const App = () => {
           setLoggedIn(true);
           // Extract email correctly from response.data.succ.userEmail
           setUserEmail(response.data.succ?.userEmail || '');
+          localStorage.setItem('user', response.data.succ?.userEmail || '');
         } else {
           console.log('❌ Invalid token. Logging out...');
           setLoggedIn(false);

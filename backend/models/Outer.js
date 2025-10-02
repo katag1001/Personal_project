@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const outerwearSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true},
+  name: { type: String, required: true},
   imageUrl: { type: String, default: "" },
   min_temp: { type: Number, required: true },
   max_temp: { type: Number, required: true },
@@ -12,6 +12,7 @@ const outerwearSchema = new mongoose.Schema({
   summer: { type: Boolean, required: true },
   autumn: { type: Boolean, required: true },
   winter: { type: Boolean, required: true },
+  username: { type: String, required: true, default: "guest" },
 });
 
 module.exports = mongoose.model('Outerwear', outerwearSchema);

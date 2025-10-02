@@ -18,7 +18,7 @@ const matchSchema = new mongoose.Schema({
   rejected: { type: Boolean, required: true },
   lastWornDate: { type: Date, required: true  },
   userMade: { type: Boolean, required: true },
-  username: { type: String, required: false, default: null },
+  username: { type: String, required: true, default: "guest" },
 });
 
 module.exports = mongoose.model('Match', matchSchema);

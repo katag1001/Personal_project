@@ -20,7 +20,7 @@ const todaySchema = new mongoose.Schema({
   lastWornDate: { type: Date, default: null },
   rank: { type: Number, default: null },
   userMade: { type: Boolean, required: true },
-  username: { type: String, required: false, default: null },
+  username: { type: String, required: true, default: "guest" },
 });
 
 module.exports = mongoose.model('Today', todaySchema);
