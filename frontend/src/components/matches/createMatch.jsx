@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const colorOptions = [
   "navy", "soft white", "warm gray", "sage green",
@@ -23,15 +24,17 @@ const CreateMatch = () => {
   const [response, setResponse] = useState(null);
 
   // Fetch all clothing data on mount
-  useEffect(() => {
+ useEffect(() => {
     const fetchClothes = async () => {
+      const user = localStorage.getItem('user')
       try {
         const [tops, bottoms, outers, onepieces] = await Promise.all([
-          fetch('/api/clothing/top').then(res => res.json()),
-          fetch('/api/clothing/bottom').then(res => res.json()),
-          fetch('/api/clothing/outerwear').then(res => res.json()),
-          fetch('/api/clothing/onepiece').then(res => res.json()),
+          axios.post('/api/clothing/top',{'username':user}).then(res => res.data),
+          axios.post('/api/clothing/bottom',{'username':user}).then(res => res.data),
+          axios.post('/api/clothing/outerwear',{'username':user}).then(res => res.data),
+          axios.post('/api/clothing/onepiece',{'username':user}).then(res => res.data),
         ]);
+        console.log(tops)
         setClothesData({ tops, bottoms, outers, onepieces });
       } catch (err) {
         console.error('Error fetching clothing data:', err);
