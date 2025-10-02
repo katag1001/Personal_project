@@ -32,7 +32,20 @@ async function connectToDB() {
 }
 connectToDB();
 
-// Mount the router at /today
+const cloudinary = require("cloudinary");
+cloudinary.config({
+	cloud_name: process.env.CLOUD_NAME || "default_value",
+	api_key: process.env.API_KEY || "default_value",
+	api_secret: process.env.API_SECRET || "default_value",
+  });
+  (async () => {
+	try {
+	  const response = await cloudinary.api.ping();
+	  console.log("Cloudinary connection test:", response);
+	} catch (error) {
+	  console.error("Cloudinary connection failed:", error);
+	}
+  })();
 
 
 // Attach the API routes to specific endpoints
