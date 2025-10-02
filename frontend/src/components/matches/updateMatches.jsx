@@ -7,8 +7,7 @@ const UpdateMatches = ({ match, onClose, onUpdateSuccess, onError }) => {
     autumn: false,
     winter: false,
     min_temp: '',
-    max_temp: '',
-    tags: ''
+    max_temp: ''
   });
 
   useEffect(() => {
@@ -19,8 +18,7 @@ const UpdateMatches = ({ match, onClose, onUpdateSuccess, onError }) => {
         autumn: match.autumn,
         winter: match.winter,
         min_temp: match.min_temp,
-        max_temp: match.max_temp,
-        tags: (match.tags || []).join(', '),
+        max_temp: match.max_temp
       });
     }
   }, [match]);
@@ -36,15 +34,14 @@ const UpdateMatches = ({ match, onClose, onUpdateSuccess, onError }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prepare update body with only fields user wants to update
     const body = {
       spring: updateData.spring,
       summer: updateData.summer,
       autumn: updateData.autumn,
       winter: updateData.winter,
       min_temp: Number(updateData.min_temp),
-      max_temp: Number(updateData.max_temp),
-      tags: updateData.tags.split(',').map(t => t.trim()).filter(Boolean)
+      max_temp: Number(updateData.max_temp)
+      // Do NOT include tags here
     };
 
     try {
@@ -99,9 +96,13 @@ const UpdateMatches = ({ match, onClose, onUpdateSuccess, onError }) => {
           <label>
             Max Temp: <input type="number" name="max_temp" value={updateData.max_temp} onChange={handleChange} />
           </label><br />
-          <label>
-            Tags (comma separated): <input type="text" name="tags" value={updateData.tags} onChange={handleChange} />
-          </label><br />
+
+          {/* Optional: Display tags as read-only text */}
+          {match?.tags?.length > 0 && (
+            <div>
+              <strong>Tags:</strong> {match.tags.join(', ')}
+            </div>
+          )}
 
           <button type="submit" style={{ marginTop: '1rem' }}>Save</button>
           <button

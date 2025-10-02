@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const RejectedMatches = () => {
   const [matches, setMatches] = useState([]);
+  const [itemDetails, setItemDetails] = useState({});
   const [error, setError] = useState(null);
 
   // Fetch all matches on mount
@@ -10,8 +11,52 @@ const RejectedMatches = () => {
     const fetchMatches = async () => {
       try {
         setError(null);
-        const response = await axios.post('/api/match', {username:localStorage.getItem('user')});
-        setMatches(response.data);
+        const response = await axios.post('/api/match', { username: localStorage.getItem('user') });
+        const fetchedMatches = response.data;
+        setMatches(fetchedMatches);
+
+        // ==== Extract item names and types from rejected matches ====
+        const itemsToFetch = [];
+        fetchedMatches
+          .filter(match => match.rejected)
+          .forEach(match => {
+            ['top', 'bottom', 'outer', 'onepiece'].forEach(type => {
+              const name = match[type];
+              if (name) itemsToFetch.push({ type, name });
+            });
+          });
+
+        // ==== Remove duplicates ====
+        const uniqueItems = [...new Set(itemsToFetch.map(i => `${i.type}_${i.name}`))];
+
+        // ==== Fetch each item from clothing API ====
+        const fetchItem = async ({ type, name }) => {
+          try {
+            const res = await axios.post(`/api/clothing/${type}/${name}`, {
+              username: localStorage.getItem('user')
+            });
+            return { key: `${type}_${name}`, data: res.data };
+          } catch {
+            return null;
+          }
+        };
+
+        const fetchedItems = await Promise.all(
+          uniqueItems.map(key => {
+            const [type, name] = key.split('_');
+            return fetchItem({ type, name });
+          })
+        );
+
+        // ==== Store fetched item data by key ====
+        const itemMap = {};
+        fetchedItems.forEach(entry => {
+          if (entry && entry.data && !entry.data.error) {
+            itemMap[entry.key] = entry.data;
+          }
+        });
+
+        setItemDetails(itemMap);
       } catch (err) {
         setError('Failed to fetch matches');
       }
@@ -19,6 +64,24 @@ const RejectedMatches = () => {
 
     fetchMatches();
   }, []);
+
+  // Render item image
+  const renderItemImage = (type, name) => {
+    if (!name) return null;
+    const item = itemDetails[`${type}_${name}`];
+    if (item?.imageUrl) {
+      return (
+        <div style={{ display: 'inline-block', marginRight: '1rem' }}>
+          <img
+            src={item.imageUrl}
+            alt={`${type}-${name}`}
+            style={{ maxWidth: '150px', maxHeight: '150px', objectFit: 'cover' }}
+          />
+        </div>
+      );
+    }
+    return null;
+  };
 
   // Delete match by ID
   const handleDelete = async (id) => {
@@ -32,7 +95,6 @@ const RejectedMatches = () => {
       if (data.error) {
         setError(data.error);
       } else {
-        // Refresh matches list after delete
         setMatches((prevMatches) => prevMatches.filter((match) => match._id !== id));
       }
     } catch (err) {
@@ -56,7 +118,6 @@ const RejectedMatches = () => {
       if (data.error) {
         setError(data.error);
       } else {
-        // Remove reinstated match from the rejected list
         setMatches((prevMatches) =>
           prevMatches.map((match) =>
             match._id === id ? { ...match, rejected: false } : match
@@ -76,27 +137,21 @@ const RejectedMatches = () => {
 
       {matches.filter(match => match.rejected).length === 0 && !error && <p>No rejected matches found.</p>}
 
-      <ul>
+      <ul style={{ listStyle: 'none', padding: 0 }}>
         {matches.filter(match => match.rejected).map((match) => (
-          <li key={match._id} style={{ marginBottom: '1.5rem' }}>
-            <p><strong>Top:</strong> {match.top || 'N/A'}</p>
-            <p><strong>Bottom:</strong> {match.bottom || 'N/A'}</p>
-            <p><strong>Outerwear:</strong> {match.outer || 'N/A'}</p>
-            <p><strong>One-piece:</strong> {match.onepiece || 'N/A'}</p>
-            <p><strong>Colors:</strong> {match.colors.join(', ')}</p>
-            <p><strong>Tags:</strong> {match.tags}</p>
-            <p><strong>Rejected:</strong> {match.rejected ? 'true' : 'false'}</p>
-            <p><strong>Temperature:</strong> {match.min_temp}° - {match.max_temp}°</p>
-            <p><strong>Type:</strong> {match.type}</p>
-            <p><strong>Seasons:</strong> 
-              {[match.spring && 'Spring', match.summer && 'Summer', match.autumn && 'Autumn', match.winter && 'Winter']
-                .filter(Boolean)
-                .join(', ') || 'N/A'}
-            </p>
-            <p><strong>Styles:</strong> {match.styles.join(', ')}</p>
-            <p><strong>Last Worn:</strong> {match.lastWornDate ? new Date(match.lastWornDate).toLocaleDateString() : 'Never'}</p>
+          <li key={match._id} style={{ marginBottom: '2rem', borderBottom: '1px solid #ccc', paddingBottom: '1rem' }}>
+            
+            {/* ==== Images ==== */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+              {renderItemImage('top', match.top)}
+              {renderItemImage('bottom', match.bottom)}
+              {renderItemImage('outer', match.outer)}
+              {renderItemImage('onepiece', match.onepiece)}
+            </div>
 
-            {/* Reinstate button */}
+
+           
+            {/* ==== Action Buttons ==== */}
             <button
               onClick={() => handleReinstate(match._id)}
               style={{
@@ -112,7 +167,6 @@ const RejectedMatches = () => {
               Reinstate Match
             </button>
 
-            {/* Delete button */}
             <button
               onClick={() => handleDelete(match._id)}
               style={{

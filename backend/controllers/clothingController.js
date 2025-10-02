@@ -80,17 +80,24 @@ exports.getItemById = async (req, res) => {
 
 exports.getItemByName = async (req, res) => {
   const { type, name } = req.params;
+  const username = req.body.username;
+  console.log(`Fetching ${type} with name "${name}" for user "${username}"`);
+
   const Model = getModel(type);
   if (!Model) return res.json({ error: 'Invalid type' });
 
   try {
-    const item = await Model.findOne({ name: name });
-    if (!item) return res.json({ message: `${type} with name "${name}" not found` });
+    // Add username to the filter along with name
+    const item = await Model.findOne({ 'name': name, 'username': username });
+    if (!item) {
+      return res.json({ message: `${type} with name "${name}" for user "${username}" not found` });
+    }
     res.json(item);
   } catch (error) {
     res.json({ error: error.message });
   }
 };
+
 
 exports.updateItem = async (req, res) => {
   const { type, id } = req.params;

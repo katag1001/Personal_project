@@ -7,49 +7,74 @@ const ViewToday = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState(null);
+  const [itemDetails, setItemDetails] = useState({});
 
   const fetchTodayOutfits = async () => {
-
     setLoading(true);
     try {
-      const response = await axios.post('/api/today/get', {username:localStorage.getItem('user')});
+      const response = await axios.post('/api/today/get', {
+        username: localStorage.getItem('user'),
+      });
+
       const data = response.data;
 
-      if (data) {
-        if (Array.isArray(data)) {
-          setOutfits(data);
-          setMessage(null);
+      if (Array.isArray(data)) {
+        setOutfits(data);
+        const ranks = data.map((o) => o.rank).filter((r) => r != null);
+        const maxRank = ranks.length ? Math.max(...ranks) : null;
 
-          const ranks = data
-            .map((o) => o.rank)
-            .filter((r) => r !== null && r !== undefined);
-          const maxRank = ranks.length ? Math.max(...ranks) : null;
+        if (maxRank != null) {
+          const maxRankOutfits = data.filter((o) => o.rank === maxRank);
+          setFilteredOutfits(maxRankOutfits);
+          setCurrentIndex(0);
 
-        if (maxRank !== null) {
-            const maxRankOutfits = data.filter((o) => o.rank === maxRank);
-            setFilteredOutfits(maxRankOutfits);
-            setCurrentIndex(0);
-          } else {
-            setFilteredOutfits([]);
-            setMessage('No outfits with rank found.');
-          }
-        } else if (data.message) {
-          setOutfits([]);
-          setFilteredOutfits([]);
-          setMessage(data.message);
+          // Fetch clothing item images
+          const itemsToFetch = [];
+          maxRankOutfits.forEach((match) => {
+            ['top', 'bottom', 'outer', 'onepiece'].forEach((type) => {
+              const name = match[type];
+              if (name) itemsToFetch.push({ type, name });
+            });
+          });
+
+          const uniqueItems = [
+            ...new Set(itemsToFetch.map((i) => `${i.type}_${i.name}`)),
+          ];
+
+          const fetchItem = async ({ type, name }) => {
+            try {
+              const res = await axios.post(`/api/clothing/${type}/${name}`, {
+                username: localStorage.getItem('user'),
+              });
+              return { key: `${type}_${name}`, data: res.data };
+            } catch {
+              return null;
+            }
+          };
+
+          const fetchedItems = await Promise.all(
+            uniqueItems.map((key) => {
+              const [type, name] = key.split('_');
+              return fetchItem({ type, name });
+            })
+          );
+
+          const itemMap = {};
+          fetchedItems.forEach((entry) => {
+            if (entry && entry.data && !entry.data.error) {
+              itemMap[entry.key] = entry.data;
+            }
+          });
+
+          setItemDetails(itemMap);
         } else {
-          setOutfits([]);
           setFilteredOutfits([]);
-          setMessage('Unexpected response format from outfits API.');
+          setMessage('No outfits with rank found.');
         }
       } else {
-        setOutfits([]);
-        setFilteredOutfits([]);
         setMessage(data.message || 'Failed to fetch outfits.');
       }
     } catch (err) {
-      setOutfits([]);
-      setFilteredOutfits([]);
       setMessage('Error fetching outfits: ' + err.message);
     } finally {
       setLoading(false);
@@ -70,10 +95,7 @@ const ViewToday = () => {
 
   const markAsWornToday = async () => {
     const outfit = filteredOutfits[currentIndex];
-    if (!outfit._id) {
-      alert('No valid ID for this outfit.');
-      return;
-    }
+    if (!outfit._id) return alert('No valid ID for this outfit.');
 
     try {
       const response = await fetch(`/api/match/${outfit._id}`, {
@@ -104,10 +126,7 @@ const ViewToday = () => {
 
   const rejectOutfit = async () => {
     const outfit = filteredOutfits[currentIndex];
-    if (!outfit._id) {
-      alert('No valid ID for this outfit.');
-      return;
-    }
+    if (!outfit._id) return alert('No valid ID for this outfit.');
 
     try {
       const response = await fetch(`/api/match/${outfit._id}`, {
@@ -136,60 +155,69 @@ const ViewToday = () => {
     }
   };
 
+  const renderItemImage = (type, name) => {
+    if (!name) return null;
+    const item = itemDetails[`${type}_${name}`];
+    if (item?.imageUrl) {
+      return (
+        <div style={{ display: 'inline-block', marginRight: '1rem' }}>
+          <img
+            src={item.imageUrl}
+            alt={`${type}-${name}`}
+            style={{
+              maxWidth: '150px',
+              maxHeight: '150px',
+              objectFit: 'cover',
+              borderRadius: '8px',
+              border: '1px solid #ccc',
+            }}
+          />
+        </div>
+      );
+    }
+    return null;
+  };
+
   if (loading) return <p>Loading outfits for today...</p>;
   if (message) return <p>{message}</p>;
-  if (filteredOutfits.length === 0) return <p>No outfits saved for today with highest rank.</p>;
+  if (filteredOutfits.length === 0)
+    return <p>No outfits saved for today with highest rank.</p>;
 
   const outfit = filteredOutfits[currentIndex];
 
   return (
     <div style={{ maxWidth: 700, margin: '2rem auto', fontFamily: 'Arial, sans-serif' }}>
-      <h2>Today's Outfits (Rank {outfit.rank})</h2>
+      <h2>Today's Best Outfit (Rank {outfit.rank})</h2>
 
-      <ul style={{ listStyleType: 'none', padding: 0 }}>
-        <li
-          key={outfit._id || currentIndex}
+      {/* Outfit Images */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: '1rem' }}>
+        {renderItemImage('top', outfit.top)}
+        {renderItemImage('bottom', outfit.bottom)}
+        {renderItemImage('outer', outfit.outer)}
+        {renderItemImage('onepiece', outfit.onepiece)}
+      </div>
+
+
+      {/* Buttons */}
+      <div style={{ marginBottom: '1rem' }}>
+        <button onClick={markAsWornToday}>Mark as Worn Today</button>
+        <button
+          onClick={rejectOutfit}
           style={{
-            border: '1px solid #ccc',
-            borderRadius: 8,
-            padding: '1rem',
-            marginBottom: '1rem',
-            whiteSpace: 'pre-wrap',
-            fontFamily: 'monospace',
-            backgroundColor: '#f9f9f9',
+            marginLeft: '1rem',
+            backgroundColor: '#f44336',
+            color: '#fff',
+            border: 'none',
+            padding: '0.5rem 1rem',
+            borderRadius: '4px',
+            cursor: 'pointer',
           }}
         >
-          {Object.entries(outfit).map(([key, value]) => (
-            <div key={key}>
-              <strong>{key}:</strong>{' '}
-              {typeof value === 'object' && value !== null
-                ? JSON.stringify(value)
-                : String(value)}
-            </div>
-          ))}
+          Reject
+        </button>
+      </div>
 
-          <button onClick={markAsWornToday} style={{ marginTop: '1rem' }}>
-            Mark as Worn Today
-          </button>
-
-          <button
-            onClick={rejectOutfit}
-            style={{
-              marginTop: '0.5rem',
-              marginLeft: '1rem',
-              backgroundColor: '#f44336',
-              color: '#fff',
-              border: 'none',
-              padding: '0.5rem 1rem',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
-            Reject
-          </button>
-        </li>
-      </ul>
-
+      {/* Navigation */}
       <div
         style={{
           display: 'flex',
