@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const RejectedMatches = () => {
   const [matches, setMatches] = useState([]);
@@ -9,14 +10,8 @@ const RejectedMatches = () => {
     const fetchMatches = async () => {
       try {
         setError(null);
-        const response = await fetch('/api/match');
-        const data = await response.json();
-
-        if (data.error) {
-          setError(data.error);
-        } else {
-          setMatches(data);
-        }
+        const response = await axios.post('/api/match', {username:localStorage.getItem('user')});
+        setMatches(response.data);
       } catch (err) {
         setError('Failed to fetch matches');
       }

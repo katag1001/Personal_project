@@ -3,7 +3,7 @@ const Today = require('../models/Today');
 
 exports.createToday = async (req, res) => {
   try {
-    const { min_temp_today, max_temp_today, season_today } = req.body;
+    const { min_temp_today, max_temp_today, season_today, username } = req.body;
 
     console.log(`[createToday] Incoming request at ${new Date().toISOString()}`);
     console.log(`[createToday] Payload received:`, { min_temp_today, max_temp_today, season_today });
@@ -31,6 +31,7 @@ exports.createToday = async (req, res) => {
       max_temp: { $lte: max_temp_today },
       rejected: false, 
       ...seasonFilter,
+      username: username
     });
 
     console.timeEnd(timeLabel);

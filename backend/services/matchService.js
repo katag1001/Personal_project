@@ -1,12 +1,6 @@
 const Match = require('../models/Match');
 const axios = require("axios");
-
-const colorPalettes = [
-  ["navy", "soft white", "warm gray", "sage green", "dusty rose"],
-  ["navy", "warm gray", "sage green", "mustard", "terracotta"],
-  ["warm gray", "sage green", "mustard", "terracotta", "cream"],
-  ["sage green", "mustard", "terracotta", "cream", "dusty rose"]
-];
+const { colorPalettes } = require('../utils/colorPalettes');
 
 function matchPath(newItem, tops, bottoms, outer, onepiece, matches, context) {
   console.log("Matching path for new item:", newItem.name);

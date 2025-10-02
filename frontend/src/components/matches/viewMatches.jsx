@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DeleteMatches from './deleteMatches';
 import UpdateMatches from './updateMatches';
+import axios from 'axios';
 
 const ViewMatches = () => {
   const [matches, setMatches] = useState([]);
@@ -9,16 +10,12 @@ const ViewMatches = () => {
 
   useEffect(() => {
     const fetchMatches = async () => {
+      
       try {
         setError(null);
-        const response = await fetch('/api/match');
-        const data = await response.json();
+        const response = await axios.post('/api/match', {username:localStorage.getItem('user')});
+        setMatches(response.data);
 
-        if (data.error) {
-          setError(data.error);
-        } else {
-          setMatches(data);
-        }
       } catch {
         setError('Failed to fetch matches');
       }

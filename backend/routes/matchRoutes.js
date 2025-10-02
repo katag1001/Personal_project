@@ -4,7 +4,7 @@ const matchController = require('../controllers/matchController');
 
 router.post('/matches', matchController.createMatch);
 router.post('/bulk', matchController.createMatchesBulk);
-router.get('/', matchController.getAllMatches);
+router.post('/', matchController.getAllMatches);
 router.get('/:id', matchController.getMatchById);
 router.put('/:id', matchController.updateMatch);
 router.delete('/:id', matchController.deleteMatch);

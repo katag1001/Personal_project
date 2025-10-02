@@ -16,6 +16,7 @@ function getModel(type) {
 
 exports.createItem = async (req, res) => {
   const { type } = req.body;
+  const username = req.body.username;
   const Model = getModel(type);
   if (!Model) return res.json({ error: 'Invalid type' });
 
@@ -34,10 +35,10 @@ exports.createItem = async (req, res) => {
     await item.save();
 
     const [tops, bottoms, outerwear, onepieces] = await Promise.all([
-      Top.find(),
-      Bottom.find(),
-      Outerwear.find(),
-      OnePiece.find()
+      Top.find({'username':username}),
+      Bottom.find({'username':username}),
+      Outerwear.find({'username':username}),
+      OnePiece.find({'username':username})
     ]);
 
     processMatches(item, tops, bottoms, outerwear, onepieces);
@@ -51,11 +52,12 @@ exports.createItem = async (req, res) => {
 
 exports.getAllItems = async (req, res) => {
   const { type } = req.params;
+  const username = req.body.username;
   const Model = getModel(type);
   if (!Model) return res.json({ error: 'Invalid type' });
 
   try {
-    const items = await Model.find();
+    const items = await Model.find({'username':username});
     res.json(items);
   } catch (error) {
     res.json({ error: error.message });

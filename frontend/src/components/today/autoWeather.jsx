@@ -35,6 +35,7 @@ const AutoWeather = () => {
           min_temp_today: min,
           max_temp_today: max,
           season_today: season,
+          username: localStorage.getItem('user')  
         }),
       });
       return await response.json();

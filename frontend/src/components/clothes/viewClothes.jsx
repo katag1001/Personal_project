@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import deleteClothes from './deleteClothes';
 import updateClothes from './updateClothes';
 import UpdateClothesForm from './UpdateClothesForm';
+import axios from 'axios';
 
 const ViewClothes = () => {
   const [items, setItems] = useState([]);
@@ -15,20 +16,17 @@ const ViewClothes = () => {
   const clothingTypes = ['top', 'bottom', 'outerwear', 'onepiece'];
 
   // Fetch items by selected type
-  const fetchItems = async () => {
+const fetchItems = async () => {
     try {
       setError(null);
       setItems([]);
 
-      const response = await fetch(`/api/clothing/${type}`);
-      const data = await response.json();
-
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setItems(data);
-      }
+      const response = await axios.post(`/api/clothing/${type}`,{username:localStorage.getItem('user')});
+   
+      setItems(response.data);
+      
     } catch (err) {
+      console.log(err)
       setError('Failed to fetch items');
     }
   };
@@ -90,7 +88,7 @@ const ViewClothes = () => {
     }
 
     if (Object.keys(updatedData).length === 0) {
-      setEditItem(null); // no changes made, just close popup
+      setEditItem(null); 
       return;
     }
 

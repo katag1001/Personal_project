@@ -26,8 +26,9 @@ exports.createMatchesBulk = async (req, res) => {
 
 // Get all matches
 exports.getAllMatches = async (req, res) => {
+  const username = req.body.username;
   try {
-    const matches = await Match.find();
+    const matches = await Match.find({'username':username});
     res.json(matches);
   } catch (error) {
     res.json({ error: error.message });
