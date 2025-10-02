@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const ViewToday = () => {
   const [outfits, setOutfits] = useState([]);
@@ -8,12 +9,13 @@ const ViewToday = () => {
   const [message, setMessage] = useState(null);
 
   const fetchTodayOutfits = async () => {
+
     setLoading(true);
     try {
-      const response = await fetch('/api/today/get');
-      const data = await response.json();
+      const response = await axios.post('/api/today/get', {username:localStorage.getItem('user')});
+      const data = response.data;
 
-      if (response.ok) {
+      if (data) {
         if (Array.isArray(data)) {
           setOutfits(data);
           setMessage(null);
@@ -23,7 +25,7 @@ const ViewToday = () => {
             .filter((r) => r !== null && r !== undefined);
           const maxRank = ranks.length ? Math.max(...ranks) : null;
 
-          if (maxRank !== null) {
+        if (maxRank !== null) {
             const maxRankOutfits = data.filter((o) => o.rank === maxRank);
             setFilteredOutfits(maxRankOutfits);
             setCurrentIndex(0);

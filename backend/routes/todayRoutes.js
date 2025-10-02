@@ -3,7 +3,7 @@ const router = express.Router();
 const todayController = require('../controllers/todayController');
 
 router.post('/create', todayController.createToday);
-router.get('/get', todayController.getToday);
+router.post('/get', todayController.getToday);
 
 
 module.exports = router;

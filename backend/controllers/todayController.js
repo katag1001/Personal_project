@@ -78,14 +78,15 @@ exports.createToday = async (req, res) => {
 
 
 exports.getToday = async (req, res) => {
+  const username = req.body.username;
   try {
-    const outfits = await Today.find().sort({ rank: 1 });
+    const outfits = await Today.find({'username':username}).sort({ rank: 1 });
 
     if (outfits.length === 0) {
       return res.json({ message: 'No outfits found for today.' });
     }
 
-    res.json(outfits);
+    res.send(outfits);
   } catch (err) {
     console.error('Error in getToday:', err);
     res.json({ message: 'Internal server error.' });
