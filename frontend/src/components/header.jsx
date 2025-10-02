@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import wearableLogo from '../assets/images/wearable_logo.png';
 
 const Header = ({ loggedIn }) => {
   return (
@@ -10,6 +11,7 @@ const Header = ({ loggedIn }) => {
 
         {loggedIn ? (
           <>
+            <div><img src={wearableLogo} alt="Wearable Logo" style={{width: "50px", height: "auto"}}/></div>
             <div className="navbar-dropdown">
               <select
                 className="nav-select"
