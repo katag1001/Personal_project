@@ -1,17 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import axios from 'axios';
-import UploadImages from './uploadPics';  
-
-const colorOptions = [
-  "navy",
-  "soft white",
-  "warm gray",
-  "sage green",
-  "dusty rose",
-  "mustard",
-  "terracotta",
-  "cream"
-];
+import UploadImages from './uploadPics';
+import ViewNewMatches from './viewNewMatches';
+import colorOptions from '../../constants/colorOptions';
 
 const styleOptions = ["plain", "patterned"];
 
@@ -30,10 +21,9 @@ const CreateClothes = () => {
     winter: false,
     username: localStorage.getItem('user')
   });
-  console.log('👤 Current username in formData:', formData);
 
   const [message, setMessage] = useState('');
- 
+  const [justCreatedItem, setJustCreatedItem] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, type, checked, multiple, options } = e.target;
@@ -60,19 +50,38 @@ const CreateClothes = () => {
         min_temp: Number(formData.min_temp),
         max_temp: Number(formData.max_temp),
         colors: formData.colors,
-        styles: [formData.styles], // wrap in array for consistency
+        styles: [formData.styles],
       };
 
       const res = await axios.post('/api/clothing', payload);
 
       if (res.data.error) {
         setMessage(`Error: ${res.data.error}`);
+        setJustCreatedItem(null);
       } else {
         setMessage(`Item created: ${res.data.name}`);
+        setJustCreatedItem({ name: res.data.name, type: res.data.type });
+
+        // ✅ Reset the form here
+        setFormData({
+          name: '',
+          imageUrl: '',
+          min_temp: '',
+          max_temp: '',
+          colors: [],
+          styles: '',
+          type: 'top',
+          spring: false,
+          summer: false,
+          autumn: false,
+          winter: false,
+          username: localStorage.getItem('user'),
+        });
       }
     } catch (err) {
       console.error(err);
       setMessage('Error submitting form');
+      setJustCreatedItem(null);
     }
   };
 
@@ -83,16 +92,26 @@ const CreateClothes = () => {
         <label>
           Name: <input name="name" value={formData.name} onChange={handleChange} required />
         </label><br />
+
         <div>
-          Image URL: <UploadImages setFormData={setFormData} formData={formData} /> 
-          {formData.imageUrl && ( <img src={formData.imageUrl} alt="Clothing" style={{ maxWidth: '100px', display: 'block', marginTop: '10px' }} />)}
+          Image URL: <UploadImages setFormData={setFormData} formData={formData} />
+          {formData.imageUrl && (
+            <img
+              src={formData.imageUrl}
+              alt="Clothing"
+              style={{ maxWidth: '100px', display: 'block', marginTop: '10px' }}
+            />
+          )}
         </div><br />
+
         <label>
           Min Temp: <input name="min_temp" type="number" value={formData.min_temp} onChange={handleChange} required />
         </label><br />
+
         <label>
           Max Temp: <input name="max_temp" type="number" value={formData.max_temp} onChange={handleChange} required />
         </label><br />
+
         <label>
           Colors:
           <select name="colors" multiple value={formData.colors} onChange={handleChange}>
@@ -101,6 +120,7 @@ const CreateClothes = () => {
             ))}
           </select>
         </label><br />
+
         <label>
           Style:
           <select name="styles" value={formData.styles} onChange={handleChange} required>
@@ -110,6 +130,7 @@ const CreateClothes = () => {
             ))}
           </select>
         </label><br />
+
         <label>
           Type:
           <select name="type" value={formData.type} onChange={handleChange}>
@@ -119,6 +140,7 @@ const CreateClothes = () => {
             <option value="onepiece">OnePiece</option>
           </select>
         </label><br />
+
         <label>
           Spring: <input type="checkbox" name="spring" checked={formData.spring} onChange={handleChange} />
         </label><br />
@@ -131,9 +153,20 @@ const CreateClothes = () => {
         <label>
           Winter: <input type="checkbox" name="winter" checked={formData.winter} onChange={handleChange} />
         </label><br />
+
         <button type="submit">Add Item</button>
       </form>
+
       {message && <p>{message}</p>}
+
+      {justCreatedItem && (
+        <div style={{ marginTop: '2rem' }}>
+          <ViewNewMatches
+            newItemName={justCreatedItem.name}
+            newItemType={justCreatedItem.type}
+          />
+        </div>
+      )}
     </div>
   );
 };

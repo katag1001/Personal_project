@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import DeleteMatches from './deleteMatches';
-import UpdateMatches from './updateMatches';
+import DeleteMatches from '../matches/deleteMatches';
+import UpdateMatches from '../matches/updateMatches';
 
-const ViewMatches = () => {
+const ViewNewMatches = ({ newItemName, newItemType }) => {
   const [matches, setMatches] = useState([]);
   const [itemDetails, setItemDetails] = useState({});
   const [error, setError] = useState(null);
@@ -14,23 +14,26 @@ const ViewMatches = () => {
       try {
         setError(null);
         const response = await axios.post('/api/match', { username: localStorage.getItem('user') });
-        const fetchedMatches = response.data;
-        setMatches(fetchedMatches);
 
-        // Prepare items to fetch, translating 'outer' to 'outerwear' type for backend
+        // Filter matches to only include those that include the new item
+        const relevantMatches = response.data.filter(match => {
+          if (newItemType === 'outerwear') return match.outer === newItemName;
+          return match[newItemType] === newItemName;
+        });
+
+        setMatches(relevantMatches);
+
         const itemsToFetch = [];
-        fetchedMatches.forEach(match => {
+        relevantMatches.forEach(match => {
           ['top', 'bottom', 'outer', 'onepiece'].forEach(key => {
             const name = match[key];
             if (name) {
-              // Translate 'outer' key to 'outerwear' type
               const type = key === 'outer' ? 'outerwear' : key;
               itemsToFetch.push({ type, name });
             }
           });
         });
 
-        // Deduplicate by type_name key
         const uniqueItems = [...new Set(itemsToFetch.map(i => `${i.type}_${i.name}`))];
 
         const fetchItem = async ({ type, name }) => {
@@ -45,7 +48,7 @@ const ViewMatches = () => {
         const fetchedItems = await Promise.all(
           uniqueItems.map(key => {
             const [type, ...nameParts] = key.split('_');
-            const name = nameParts.join('_'); // In case names have underscores
+            const name = nameParts.join('_');
             return fetchItem({ type, name });
           })
         );
@@ -59,12 +62,12 @@ const ViewMatches = () => {
 
         setItemDetails(itemMap);
       } catch {
-        setError('Failed to fetch matches');
+        setError('Failed to fetch new matches');
       }
     };
 
     fetchMatches();
-  }, []);
+  }, [newItemName, newItemType]);
 
   const handleDeleteSuccess = (id) => {
     setMatches(prev => prev.filter(match => match._id !== id));
@@ -78,11 +81,8 @@ const ViewMatches = () => {
     setError(msg);
   };
 
-  // Render images, translating 'outer' key to 'outerwear' type to get details from itemDetails
   const renderItemImage = (type, name) => {
     if (!name) return null;
-
-    // Translate type for 'outer' -> 'outerwear' so keys match itemDetails
     const lookupType = type === 'outer' ? 'outerwear' : type;
     const item = itemDetails[`${lookupType}_${name}`];
 
@@ -101,24 +101,22 @@ const ViewMatches = () => {
   };
 
   return (
-    <>
-      <h2>Outfit Matches</h2>
+    <div>
+      <h2>New Matches for: {newItemName}</h2>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      {matches.length === 0 && !error && <p>No matches found.</p>}
+      {matches.length === 0 && !error && <p>No new matches found.</p>}
 
       <ul style={{ listStyle: 'none', padding: 0 }}>
         {matches.filter(match => !match.rejected).map(match => (
           <li key={match._id} style={{ marginBottom: '2rem', borderBottom: '1px solid #ccc', paddingBottom: '1rem' }}>
-            {/* Images */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
               {renderItemImage('top', match.top)}
               {renderItemImage('bottom', match.bottom)}
-              {renderItemImage('outer', match.outer)} {/* type 'outer' mapped internally */}
+              {renderItemImage('outer', match.outer)}
               {renderItemImage('onepiece', match.onepiece)}
             </div>
 
-            {/* Match Info */}
             <p><strong>Temperature Range:</strong> {match.min_temp}° - {match.max_temp}°</p>
             <p><strong>Seasons:</strong> {
               ['spring', 'summer', 'autumn', 'winter']
@@ -127,7 +125,6 @@ const ViewMatches = () => {
                 .join(', ') || 'N/A'
             }</p>
 
-            {/* Action Buttons */}
             <DeleteMatches
               matchId={match._id}
               onDeleteSuccess={handleDeleteSuccess}
@@ -152,7 +149,6 @@ const ViewMatches = () => {
         ))}
       </ul>
 
-      {/* Update Modal */}
       {editingMatch && (
         <UpdateMatches
           match={editingMatch}
@@ -161,8 +157,8 @@ const ViewMatches = () => {
           onError={handleError}
         />
       )}
-    </>
+    </div>
   );
 };
 
-export default ViewMatches;
+export default ViewNewMatches;

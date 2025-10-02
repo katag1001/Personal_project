@@ -1,4 +1,3 @@
-// updateClothes.js
 const updateClothes = async (type, id, updatedData) => {
   try {
     const response = await fetch(`/api/clothing/${type}/${id}`, {

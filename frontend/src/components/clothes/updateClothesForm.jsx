@@ -1,6 +1,33 @@
 import React from 'react';
 
+const colorOptions = [
+  "navy",
+  "soft white",
+  "warm gray",
+  "sage green",
+  "dusty rose",
+  "mustard",
+  "terracotta",
+  "cream"
+];
+
+const styleOptions = [
+  "plain",
+  "patterned"
+];
+
 const UpdateClothesForm = ({ type, formData, onChange, onSubmit, onCancel }) => {
+  const handleMultiSelectChange = (e) => {
+    const { name, options } = e.target;
+    const selected = Array.from(options).filter(o => o.selected).map(o => o.value);
+    onChange({ target: { name, value: selected } });
+  };
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    onChange({ target: { name, value: checked } });
+  };
+
   return (
     <div
       style={{
@@ -13,28 +40,56 @@ const UpdateClothesForm = ({ type, formData, onChange, onSubmit, onCancel }) => 
         padding: '1rem',
         zIndex: 1000,
         width: '300px',
+        borderRadius: '8px'
       }}
     >
-      <h3>Update Item</h3>
+      <h3>Update {type.charAt(0).toUpperCase() + type.slice(1)}</h3>
       <form onSubmit={onSubmit}>
         <label>
-          {type}:
+          Name:
           <input
-            name={type}
-            value={formData[type]}
+            type="text"
+            name="name"
+            value={formData.name}
             onChange={onChange}
+            style={{ width: '100%' }}
+            required
           />
         </label>
         <br />
+
         <label>
-          Colors (comma-separated):
-          <input
+          Colors:
+          <select
             name="colors"
+            multiple
             value={formData.colors}
-            onChange={onChange}
-          />
+            onChange={handleMultiSelectChange}
+            style={{ width: '100%', height: '80px' }}
+          >
+            {colorOptions.map((color) => (
+              <option key={color} value={color}>{color}</option>
+            ))}
+          </select>
         </label>
         <br />
+
+        <label>
+          Styles:
+          <select
+            name="styles"
+            multiple
+            value={formData.styles}
+            onChange={handleMultiSelectChange}
+            style={{ width: '100%', height: '50px' }}
+          >
+            {styleOptions.map((style) => (
+              <option key={style} value={style}>{style}</option>
+            ))}
+          </select>
+        </label>
+        <br />
+
         <label>
           Min Temp:
           <input
@@ -45,6 +100,7 @@ const UpdateClothesForm = ({ type, formData, onChange, onSubmit, onCancel }) => 
           />
         </label>
         <br />
+
         <label>
           Max Temp:
           <input
@@ -55,15 +111,7 @@ const UpdateClothesForm = ({ type, formData, onChange, onSubmit, onCancel }) => 
           />
         </label>
         <br />
-        <label>
-          Styles (comma-separated):
-          <input
-            name="styles"
-            value={formData.styles}
-            onChange={onChange}
-          />
-        </label>
-        <br />
+
         <label>
           Last Worn Date:
           <input
@@ -74,6 +122,22 @@ const UpdateClothesForm = ({ type, formData, onChange, onSubmit, onCancel }) => 
           />
         </label>
         <br />
+
+        <fieldset style={{ marginTop: '10px' }}>
+          <legend>Seasons</legend>
+          {['spring', 'summer', 'autumn', 'winter'].map((season) => (
+            <label key={season} style={{ display: 'block' }}>
+              <input
+                type="checkbox"
+                name={season}
+                checked={formData[season] || false}
+                onChange={handleCheckboxChange}
+              />
+              {season.charAt(0).toUpperCase() + season.slice(1)}
+            </label>
+          ))}
+        </fieldset>
+
         <button type="submit" style={{ marginTop: '10px' }}>
           Save
         </button>

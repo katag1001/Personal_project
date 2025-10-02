@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import deleteClothes from './deleteClothes';
+import updateClothes from './updateClothes';
+import UpdateClothesForm from './UpdateClothesForm';
 
 const ViewClothes = () => {
   const [items, setItems] = useState([]);
   const [error, setError] = useState(null);
   const [type, setType] = useState('top');
+  const [editingItem, setEditingItem] = useState(null);
+  const [formData, setFormData] = useState({});
 
   const clothingTypes = ['top', 'bottom', 'outerwear', 'onepiece'];
 
-  // Fetch items by selected type
   const fetchItems = async () => {
     try {
       setError(null);
@@ -29,7 +33,69 @@ const ViewClothes = () => {
     fetchItems();
   }, [type]);
 
-  // Helper to get season names where the value is true
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this item?');
+    if (!confirmDelete) return;
+
+    const result = await deleteClothes(type, id);
+    if (result.error) {
+      setError(result.error);
+    } else {
+      fetchItems();
+    }
+  };
+
+  const handleEdit = (item) => {
+    setEditingItem(item._id);
+    setFormData({
+      name: item.name || '',
+      colors: item.colors || [],
+      styles: item.styles || [],
+      min_temp: item.min_temp || '',
+      max_temp: item.max_temp || '',
+      lastWornDate: item.lastWornDate?.split('T')[0] || '',
+      spring: item.spring || false,
+      summer: item.summer || false,
+      autumn: item.autumn || false,
+      winter: item.winter || false,
+    });
+  };
+
+  const handleUpdateChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+
+    const updatedData = {
+      name: formData.name,
+      colors: formData.colors,
+      styles: formData.styles,
+      min_temp: Number(formData.min_temp),
+      max_temp: Number(formData.max_temp),
+      lastWornDate: formData.lastWornDate,
+      spring: formData.spring || false,
+      summer: formData.summer || false,
+      autumn: formData.autumn || false,
+      winter: formData.winter || false,
+    };
+
+    const result = await updateClothes(type, editingItem, updatedData);
+
+    if (result.error) {
+      setError(result.error);
+    } else {
+      setEditingItem(null);
+      setFormData({});
+      fetchItems();
+    }
+  };
+
   const getSeasons = (item) => {
     const seasons = [];
     if (item.spring) seasons.push('Spring');
@@ -85,14 +151,56 @@ const ViewClothes = () => {
               />
             )}
             <p>
+              <strong>Name:</strong> {item.name}
+            </p>
+            <p>
               <strong>Seasons:</strong> {getSeasons(item)}
             </p>
             <p>
               <strong>Temperature:</strong> {item.min_temp}° - {item.max_temp}°
             </p>
+            <div style={{ marginTop: '10px' }}>
+              <button
+                onClick={() => handleEdit(item)}
+                style={{
+                  marginRight: '10px',
+                  padding: '6px 12px',
+                  backgroundColor: '#ffc107',
+                  color: 'black',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(item._id)}
+                style={{
+                  padding: '6px 12px',
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>
+
+      {editingItem && (
+        <UpdateClothesForm
+          type={type}
+          formData={formData}
+          onChange={handleUpdateChange}
+          onSubmit={handleUpdateSubmit}
+          onCancel={() => setEditingItem(null)}
+        />
+      )}
     </>
   );
 };
