@@ -30,7 +30,7 @@ function matchPath(newItem, tops, bottoms, outer, onepiece, matches, context) {
       tags: null,
       rejected: false,
       userMade: false,
-      username: null,
+      username: newItem.username || null,
       lastWornDate: new Date('1925-09-25T00:00:00.000Z')
     };
 
@@ -126,7 +126,7 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
       autumn: newItem.autumn && matchItem.autumn,
       winter: newItem.winter && matchItem.winter,
       userMade: false,
-      username: null,
+      username: newItem.username || matchItem.username || null,
       lastWornDate: new Date('1925-09-25T00:00:00.000Z'),
       ...overrides,
     };

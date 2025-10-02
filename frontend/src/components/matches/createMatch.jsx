@@ -89,7 +89,7 @@ const CreateMatch = () => {
       tags: [],
       rejected: false,
       userMade: true,
-      username: null,
+      username: localStorage.getItem('user') || null,
     };
 
     try {
