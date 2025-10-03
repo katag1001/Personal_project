@@ -6,37 +6,38 @@ import UpdateClothesForm from './UpdateClothesForm';
 import './viewClothes.css';
 
 const ViewClothes = () => {
-  const [items, setItems] = useState([]);
+  const [itemsByType, setItemsByType] = useState({});
   const [error, setError] = useState(null);
-  const [type, setType] = useState('top');
   const [editingItem, setEditingItem] = useState(null);
+  const [editingType, setEditingType] = useState(null);
   const [formData, setFormData] = useState({});
 
-  const scrollContainerRef = useRef(null);
-
   const clothingTypes = ['top', 'bottom', 'outerwear', 'onepiece'];
+  const scrollRefs = useRef({});
 
-  const fetchItems = async () => {
+  const fetchAllItems = async () => {
     try {
       setError(null);
-      setItems([]);
+      const username = localStorage.getItem('user');
+      const allItems = {};
 
-      const response = await axios.post(`/api/clothing/${type}`, {
-        username: localStorage.getItem('user'),
-      });
+      for (const type of clothingTypes) {
+        const response = await axios.post(`/api/clothing/${type}`, { username });
+        allItems[type] = response.data;
+      }
 
-      setItems(response.data);
+      setItemsByType(allItems);
     } catch (err) {
-      console.log(err);
-      setError('Failed to fetch items');
+      console.error(err);
+      setError('Failed to fetch clothing items');
     }
   };
 
   useEffect(() => {
-    fetchItems();
-  }, [type]);
+    fetchAllItems();
+  }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (type, id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this item?');
     if (!confirmDelete) return;
 
@@ -44,12 +45,13 @@ const ViewClothes = () => {
     if (result.error) {
       setError(result.error);
     } else {
-      fetchItems();
+      fetchAllItems();
     }
   };
 
-  const handleEdit = (item) => {
+  const handleEdit = (type, item) => {
     setEditingItem(item._id);
+    setEditingType(type);
     setFormData({
       name: item.name || '',
       colors: item.colors || [],
@@ -88,14 +90,15 @@ const ViewClothes = () => {
       winter: formData.winter || false,
     };
 
-    const result = await updateClothes(type, editingItem, updatedData);
+    const result = await updateClothes(editingType, editingItem, updatedData);
 
     if (result.error) {
       setError(result.error);
     } else {
       setEditingItem(null);
+      setEditingType(null);
       setFormData({});
-      fetchItems();
+      fetchAllItems();
     }
   };
 
@@ -108,99 +111,81 @@ const ViewClothes = () => {
     return seasons.length > 0 ? seasons.join(', ') : 'None';
   };
 
-  // Scroll arrows
-  const scrollLeft = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({
-        left: -320,
-        behavior: 'smooth',
-      });
+  const scrollLeft = (type) => {
+    if (scrollRefs.current[type]) {
+      scrollRefs.current[type].scrollBy({ left: -320, behavior: 'smooth' });
     }
   };
 
-  const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({
-        left: 320,
-        behavior: 'smooth',
-      });
+  const scrollRight = (type) => {
+    if (scrollRefs.current[type]) {
+      scrollRefs.current[type].scrollBy({ left: 320, behavior: 'smooth' });
     }
   };
 
   return (
     <div className="view-clothes-container">
-      <h2 className="title">Select Clothing Type</h2>
-
-      <div className="button-group">
-        {clothingTypes.map((t) => (
-          <button
-            key={t}
-            onClick={() => setType(t)}
-            className={`text-button ${type === t ? 'active' : ''}`}
-          >
-            {t.charAt(0).toUpperCase() + t.slice(1)}
-          </button>
-        ))}
-      </div>
 
       {error && <p className="error-text">Error: {error}</p>}
 
-      <div className="horizontal-scroll-wrapper">
-        <button className="scroll-arrow left-arrow" onClick={scrollLeft}>
-          ‹
-        </button>
+      {clothingTypes.map((type) => (
+        <div key={type} className="clothing-section">
+          <div className="section-wrapper">
+            <h3 className="section-title">
+              {type.charAt(0).toUpperCase() + type.slice(1)}
+            </h3>
 
-        <div className="scroll-container" ref={scrollContainerRef}>
-          {items.length === 0 && !error && (
-            <p className="no-items">No items found.</p>
-          )}
+            <div className="horizontal-scroll-wrapper">
+              <button className="scroll-arrow left-arrow" onClick={() => scrollLeft(type)}>
+                ‹
+              </button>
 
-          {items.map((item) => (
-          <div key={item._id} className="clothing-card">
-          {item.imageUrl && (
-            <img
-              src={item.imageUrl}
-              alt={item.name || 'Clothing item'}
-              className="clothing-image"
-            />
-          )}
+              <div
+                className="scroll-container"
+                ref={(el) => (scrollRefs.current[type] = el)}
+              >
+                {(!itemsByType[type] || itemsByType[type].length === 0) ? (
+                  <p className="no-items">No items found.</p>
+                ) : (
+                  itemsByType[type].map((item) => (
+                    <div key={item._id} className="clothing-card">
+                      {item.imageUrl && (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.name || 'Clothing item'}
+                          className="clothing-image"
+                        />
+                      )}
 
-    <div className="clothing-details">
-      <div className="item-name">{item.name}</div>
+                      <div className="clothing-details">
+                        <div className="item-name">{item.name}</div>
 
-      <div className="item-info">
-        <div>{getSeasons(item)}</div>
-        <div>{item.min_temp}° - {item.max_temp}°</div>
-      </div>
+                        <div className="item-info">
+                          <div>{getSeasons(item)}</div>
+                          <div>{item.min_temp}° - {item.max_temp}°</div>
+                        </div>
 
-      <div className="button-row">
-        <button
-          onClick={() => handleEdit(item)}
-          className="text-button"
-        >
-          Edit
-        </button>
-        <button
-          onClick={() => handleDelete(item._id)}
-          className="text-button"
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  </div>
-))}
+                        <div className="button-row">
+                          <button onClick={() => handleEdit(type, item)} className="text-button">Edit</button>
+                          <button onClick={() => handleDelete(type, item._id)} className="text-button">Delete</button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
 
+              <button className="scroll-arrow right-arrow" onClick={() => scrollRight(type)}>
+                ›
+              </button>
+            </div>
+          </div>
         </div>
-
-        <button className="scroll-arrow right-arrow" onClick={scrollRight}>
-          ›
-        </button>
-      </div>
+      ))}
 
       {editingItem && (
         <UpdateClothesForm
-          type={type}
+          type={editingType}
           formData={formData}
           onChange={handleUpdateChange}
           onSubmit={handleUpdateSubmit}

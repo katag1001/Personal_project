@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+
 const colorOptions = [
   "navy", "soft white", "warm gray", "sage green",
   "dusty rose", "mustard", "terracotta", "cream"
