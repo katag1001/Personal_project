@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import deleteClothes from './deleteClothes';
 import updateClothes from './updateClothes';
 import UpdateClothesForm from './UpdateClothesForm';
+import './viewClothes.css';
 
 const ViewClothes = () => {
   const [items, setItems] = useState([]);
@@ -10,6 +11,8 @@ const ViewClothes = () => {
   const [type, setType] = useState('top');
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({});
+
+  const scrollContainerRef = useRef(null);
 
   const clothingTypes = ['top', 'bottom', 'outerwear', 'onepiece'];
 
@@ -105,92 +108,95 @@ const ViewClothes = () => {
     return seasons.length > 0 ? seasons.join(', ') : 'None';
   };
 
+  // Scroll arrows
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -320,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: 320,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   return (
-    <>
-      <h2>Select Clothing Type</h2>
-      <div style={{ marginBottom: '1rem' }}>
+    <div className="view-clothes-container">
+      <h2 className="title">Select Clothing Type</h2>
+
+      <div className="button-group">
         {clothingTypes.map((t) => (
           <button
             key={t}
             onClick={() => setType(t)}
-            style={{
-              marginRight: '10px',
-              padding: '8px 12px',
-              backgroundColor: type === t ? '#007BFF' : '#e0e0e0',
-              color: type === t ? 'white' : 'black',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
+            className={`type-button ${type === t ? 'active' : ''}`}
           >
             {t.charAt(0).toUpperCase() + t.slice(1)}
           </button>
         ))}
       </div>
 
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      {error && <p className="error-text">Error: {error}</p>}
 
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {items.length === 0 && !error && <p>No items found.</p>}
-        {items.map((item) => (
-          <li
-            key={item._id}
-            style={{
-              marginBottom: '2rem',
-              border: '1px solid #ccc',
-              padding: '1rem',
-              borderRadius: '8px',
-              maxWidth: '300px',
-            }}
-          >
-            {item.imageUrl && (
-              <img
-                src={item.imageUrl}
-                alt={item.name || 'Clothing item'}
-                style={{ width: '100%', borderRadius: '8px' }}
-              />
-            )}
-            <p>
-              <strong>Name:</strong> {item.name}
-            </p>
-            <p>
-              <strong>Seasons:</strong> {getSeasons(item)}
-            </p>
-            <p>
-              <strong>Temperature:</strong> {item.min_temp}° - {item.max_temp}°
-            </p>
-            <div style={{ marginTop: '10px' }}>
-              <button
-                onClick={() => handleEdit(item)}
-                style={{
-                  marginRight: '10px',
-                  padding: '6px 12px',
-                  backgroundColor: '#ffc107',
-                  color: 'black',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                }}
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(item._id)}
-                style={{
-                  padding: '6px 12px',
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div className="horizontal-scroll-wrapper">
+        <button className="scroll-arrow left-arrow" onClick={scrollLeft}>
+          ‹
+        </button>
+
+        <div className="scroll-container" ref={scrollContainerRef}>
+          {items.length === 0 && !error && (
+            <p className="no-items">No items found.</p>
+          )}
+
+          {items.map((item) => (
+          <div key={item._id} className="clothing-card">
+          {item.imageUrl && (
+            <img
+              src={item.imageUrl}
+              alt={item.name || 'Clothing item'}
+              className="clothing-image"
+            />
+          )}
+
+    <div className="clothing-details">
+      <div className="item-name">{item.name}</div>
+
+      <div className="item-info">
+        <div>{getSeasons(item)}</div>
+        <div>{item.min_temp}° - {item.max_temp}°</div>
+      </div>
+
+      <div className="button-row">
+        <button
+          onClick={() => handleEdit(item)}
+          className="mono-button"
+        >
+          Edit
+        </button>
+        <button
+          onClick={() => handleDelete(item._id)}
+          className="mono-button"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+))}
+
+        </div>
+
+        <button className="scroll-arrow right-arrow" onClick={scrollRight}>
+          ›
+        </button>
+      </div>
 
       {editingItem && (
         <UpdateClothesForm
@@ -201,7 +207,7 @@ const ViewClothes = () => {
           onCancel={() => setEditingItem(null)}
         />
       )}
-    </>
+    </div>
   );
 };
 

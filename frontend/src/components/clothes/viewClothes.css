@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Didot&display=swap');
+
+.vertical-type-label {
+  font-family: 'Didot', serif;
+}
+
+
+.view-clothes-container {
+  font-family: 'Helvetica Neue', sans-serif;
+  padding: 2rem;
+  color: #111;
+  background-color: #fff;
+  max-width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center everything horizontally */
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.button-group {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center; /* Center the buttons */
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.type-button {
+  padding: 8px 12px;
+  background-color: #f5f5f5;
+  color: #111;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  text-transform: capitalize;
+  transition: all 0.2s ease-in-out;
+}
+
+.type-button.active {
+  background-color: #000;
+  color: #fff;
+}
+
+.type-button:hover {
+  background-color: #222;
+  color: #fff;
+}
+
+.error-text {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+.horizontal-scroll-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding: 10px 0;
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-arrow {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #111;
+  width: 20px;
+  height: 100%;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  outline: none;
+}
+
+.scroll-arrow:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.scroll-arrow:hover {
+  color: #666;
+}
+
+.left-arrow {
+  margin-right: 8px;
+}
+
+.right-arrow {
+  margin-left: 8px;
+}
+
+.clothing-card {
+  flex: 0 0 auto;
+  width: 320px;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  border: 2px solid black;
+  background-color: white;
+  box-sizing: border-box;
+  margin-right: -2px; /* eliminate spacing between cards */
+}
+
+.clothing-image {
+  width: 40%;
+  height: 100%;
+  object-fit: cover;
+  border-right: 2px solid black;
+}
+
+.clothing-details {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 10px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.item-name {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.item-info {
+  font-size: 0.8rem;
+  text-align: right;
+  line-height: 1.2;
+  margin-top: auto;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.mono-button {
+  padding: 6px 10px;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.2s ease;
+}
+
+.mono-button:hover {
+  background-color: #444;
+}
+
+.no-items {
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+}
+
+
+.items-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* spacing between vertical label and scroll */
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.vertical-type-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg); /* flip text so it reads bottom-to-top */
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-weight: 900;
+  font-size: 3rem;
+  letter-spacing: 0.3em;
+  color: black;
+  user-select: none;
+  white-space: nowrap;
+  line-height: 1;
+  margin-right: 10px;
+}
