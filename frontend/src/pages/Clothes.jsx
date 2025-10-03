@@ -19,7 +19,7 @@ const Clothes = ({ loggedIn, logout }) => {
   <div className="clothes-page-container">
     <ViewClothes />
   </div>
-  </div>
+</div>
 </>
 
   );
