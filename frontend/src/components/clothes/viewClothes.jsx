@@ -136,7 +136,7 @@ const ViewClothes = () => {
           <button
             key={t}
             onClick={() => setType(t)}
-            className={`type-button ${type === t ? 'active' : ''}`}
+            className={`text-button ${type === t ? 'active' : ''}`}
           >
             {t.charAt(0).toUpperCase() + t.slice(1)}
           </button>
@@ -176,13 +176,13 @@ const ViewClothes = () => {
       <div className="button-row">
         <button
           onClick={() => handleEdit(item)}
-          className="mono-button"
+          className="text-button"
         >
           Edit
         </button>
         <button
           onClick={() => handleDelete(item._id)}
-          className="mono-button"
+          className="text-button"
         >
           Delete
         </button>
