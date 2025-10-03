@@ -6,9 +6,6 @@
   box-sizing: border-box;
 }
 
-.vertical-type-label {
-  font-family: 'Didot', serif;
-}
 
 /* Container & general layout */
 .view-clothes-container {
@@ -27,14 +24,6 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   text-align: center;
-}
-
-.button-group {
-  margin-bottom: 2rem;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
 }
 
 .error-text {
@@ -138,12 +127,17 @@
 }
 
 .button-row {
-  display: flex;
-  justify-content: center;
+  font-size: 0.8rem;
   gap: 10px;
   margin-top: 10px;
   text-align: right;
 }
+
+.button-row button {
+  margin: 0 3px;
+  font-size: 0.8rem;
+}
+
 
 .no-items {
   text-align: center;
