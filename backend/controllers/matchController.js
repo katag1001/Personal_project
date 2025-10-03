@@ -68,12 +68,15 @@ exports.deleteMatch = async (req, res) => {
 // For when the piece is deleted - delete all matches containing that piece
 exports.deleteMatchesByPiece = async (req, res) => {
   try {
-    const { pieceType, pieceValue } = req.body;
+    let { pieceType, pieceValue } = req.body;
 
     const allowedFields = ['top', 'bottom', 'outer', 'onepiece'];
     if (!allowedFields.includes(pieceType)) {
       return res.json({ error: 'Invalid piece type' });
     }
+
+    // Trim whitespace from pieceValue to avoid mismatch due to trailing spaces
+    pieceValue = pieceValue.trim();
 
     const filter = {};
     filter[pieceType] = pieceValue;

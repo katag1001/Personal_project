@@ -79,16 +79,21 @@ exports.getItemById = async (req, res) => {
 };
 
 exports.getItemByName = async (req, res) => {
-  const { type, name } = req.params;
+  const { type } = req.params;
   const username = req.body.username;
+
+  // Reconstruct the full name from the original URL
+  const basePath = `/api/clothing/${type}/`;
+  const rawName = req.originalUrl.slice(basePath.length); // get the rest of the URL after the type
+  const name = decodeURIComponent(rawName); // decode in case name has %20 or other encoded chars
+
   console.log(`Fetching ${type} with name "${name}" for user "${username}"`);
 
   const Model = getModel(type);
   if (!Model) return res.json({ error: 'Invalid type' });
 
   try {
-    // Add username to the filter along with name
-    const item = await Model.findOne({ 'name': name, 'username': username });
+    const item = await Model.findOne({ name: name, username: username });
     if (!item) {
       return res.json({ message: `${type} with name "${name}" for user "${username}" not found` });
     }
@@ -97,6 +102,7 @@ exports.getItemByName = async (req, res) => {
     res.json({ error: error.message });
   }
 };
+
 
 
 exports.updateItem = async (req, res) => {
