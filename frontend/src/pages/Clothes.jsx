@@ -7,15 +7,25 @@ import './Clothes.css';
 const Clothes = ({ loggedIn, logout }) => {
   return (
     <>
-      <Header loggedIn={loggedIn} />
-      <div className="clothes-page-container">
-        <Link to="/addclothes">
-          <button className="upload-clothes-button">Upload Clothes</button>
-        </Link>
-        <ViewClothes />
-      </div>
-    </>
+  <div className="full-page">
+  <Header loggedIn={loggedIn} />
+  
+  <div className="sticky-upload-container">
+    <Link to="/addclothes">
+      <button className="upload-clothes-button">Upload Clothes</button>
+    </Link>
+  </div>
+
+  <div className="clothes-page-container">
+    <ViewClothes />
+  </div>
+  </div>
+</>
+
   );
 };
 
 export default Clothes;
+
+
+

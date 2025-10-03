@@ -16,7 +16,6 @@
   color: #111;
   background-color: #fff;
   width: 100%;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -61,7 +60,6 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
   padding: 10px 0;
-  margin: 0;
   width: 100%;
 }
 
@@ -144,27 +142,13 @@
   justify-content: center;
   gap: 10px;
   margin-top: 10px;
+  text-align: right;
 }
 
 .no-items {
   text-align: center;
   padding: 1rem;
   font-style: italic;
-}
-
-/* Type label */
-.vertical-type-label {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font-family: 'Arial Black', Arial, sans-serif;
-  font-weight: 900;
-  font-size: 3rem;
-  letter-spacing: 0.3em;
-  color: black;
-  user-select: none;
-  white-space: nowrap;
-  line-height: 1;
-  margin-right: 10px;
 }
 
 /* Section styling */
@@ -176,7 +160,7 @@
 
 .section-wrapper {
   position: relative;
-  padding-top: 5rem; /* adjusted to fit overlapping title */
+  padding-top: 5rem; 
   width: 100%;
 }
 

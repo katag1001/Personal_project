@@ -1,25 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import wearableLogo from '../assets/images/wearable_logo.png';
+import './header.css'
 
 const Header = ({ loggedIn }) => {
   return (
     <header className="header">
       <nav className="navbar">
-        <div className="navbar-logo">
+        <div className="navbar-left">
+          <img src={wearableLogo} alt="Wearable Logo" className="navbar-logo" />
         </div>
 
-        {loggedIn ? (
-          <>
-            <div><img src={wearableLogo} alt="Wearable Logo" style={{width: "50px", height: "auto"}}/></div>
-            <div className="navbar-dropdown">
+        <div className="navbar-right">
+          {loggedIn ? (
+            <>
+            <Link to="/user" className="nav-link">User Page</Link>
               <select
                 className="nav-select"
                 onChange={(e) => {
                   const path = e.target.value;
-                  if (path) {
-                    window.location.href = path;
-                  }
+                  if (path) window.location.href = path;
                 }}
               >
                 <option value="">Select Page</option>
@@ -28,16 +28,17 @@ const Header = ({ loggedIn }) => {
                 <option value="/today-outfits">Today’s Outfits</option>
                 <option value="/">Homepage</option>
               </select>
+
+              
+            </>
+          ) : (
+            <div className="auth-links">
+              <Link to="/login" className="nav-link">Login</Link>
+              <span className="separator">|</span>
+              <Link to="/register" className="nav-link">Register</Link>
             </div>
-            <div className="user-link">
-              <Link to="/user">User Page</Link>
-            </div>
-          </>
-        ) : (
-          <div className="auth-links">
-            <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
-          </div>
-        )}
+          )}
+        </div>
       </nav>
     </header>
   );
