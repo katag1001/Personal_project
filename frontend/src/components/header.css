@@ -16,6 +16,7 @@
 .navbar {
   width: 100%;
   display: flex;
+  padding: 3.5px 12px;
   justify-content: space-between;
   align-items: center;
 }
@@ -34,26 +35,11 @@
 
 /* Logo */
 .navbar-logo {
-  width: 42px;
-  height: auto;
+  width: auto;
+  height: 60px;
   display: block;
 }
 
-/* Dropdown */
-.nav-select {
-  font-size: 0.95rem;
-  padding: 4px 8px;
-  border: 1px solid #111;
-  background-color: #fff;
-  font-family: inherit;
-  color: #111;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-}
-
-.nav-select:hover {
-  border-color: #666;
-}
 
 /* Navigation link styling */
 .nav-link {

@@ -4,7 +4,7 @@
 }
 
 /* Sticky Upload Bar below the header */
-.full-page.sticky-upload-container {
+.sticky-upload-container {
   position: fixed;
   top: 80px; /* THIS NEEDS TO BE THE SAME HEIGHT AS THE HEADER SO THAT IT SITS BENEATH */
   width: 100%;
