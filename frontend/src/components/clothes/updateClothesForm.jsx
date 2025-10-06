@@ -1,15 +1,6 @@
 import React from 'react';
+import colorOptions from '../../constants/colorOptions';
 
-const colorOptions = [
-  "navy",
-  "soft white",
-  "warm gray",
-  "sage green",
-  "dusty rose",
-  "mustard",
-  "terracotta",
-  "cream"
-];
 
 const styleOptions = [
   "plain",

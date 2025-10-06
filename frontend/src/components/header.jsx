@@ -18,7 +18,7 @@ const Header = ({ loggedIn }) => {
             <>
               <Link to="/user" className="nav-link">User Page</Link>
               <Link to="/clothes" className="nav-link">Clothes</Link>
-              <Link to="/matches" className="nav-link">Matches</Link>
+              <Link to="/matches" className="nav-link">Outfits</Link>
               <Link to="/today-outfits" className="nav-link">Today’s Outfits</Link>
             </>
           ) : (

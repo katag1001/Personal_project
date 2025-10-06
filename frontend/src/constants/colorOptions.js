@@ -1,12 +1,35 @@
 const colorOptions = [
-  "navy",
-  "soft white",
-  "warm gray",
-  "sage green",
-  "dusty rose",
-  "mustard",
-  "terracotta",
-  "cream"
+  "Beige",
+  "Black",
+  "Brown",
+  "Camel",
+  "Cream",
+  "Dark Blue",
+  "Forest Green",
+  "Fuchsia",
+  "Gold",
+  "Grey",
+  "Green",
+  "Lavender",
+  "Light Blue",
+  "Lilac",
+  "Lime Green",
+  "Magenta",
+  "Maroon",
+  "Navy",
+  "Olive Green",
+  "Orange",
+  "Peach",
+  "Pink",
+  "Purple",
+  "Red",
+  "Silver",
+  "Tan",
+  "Teal",
+  "Turquoise",
+  "White",
+  "Yellow"
 ];
+
 
 export default colorOptions;

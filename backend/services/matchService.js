@@ -36,7 +36,7 @@ function matchPath(newItem, tops, bottoms, outer, onepiece, matches, context) {
     matchItem = bottoms;
   } else if (newItem.type === "bottom") {
     matchItem = tops;
-  } else if (newItem.type === "outerwear") {
+  } else if (newItem.type === "outer") {
     matchItem = tops;
     matchSeason(newItem, matchItem, matches, context);
     matchItem = onepiece;
@@ -140,7 +140,7 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
     matches.push(result);
     matchPath(result, context.tops, context.bottoms, context.outer, null, matches, context);
 
-  } else if (newItem.type === "outerwear" && matchItem.type === "top") {
+  } else if (newItem.type === "outer" && matchItem.type === "top") {
     const result = createResult({
       top: matchItem.name,
       outer: newItem.name,
@@ -149,7 +149,7 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
 
     matchPath(result, context.tops, context.bottoms, context.outer, null, matches, context);
 
-  } else if (newItem.type === "outerwear" && matchItem.type === "onepiece") {
+  } else if (newItem.type === "outer" && matchItem.type === "onepiece") {
     const result = createResult({
       onepiece: matchItem.name,
       outer: newItem.name,
@@ -175,7 +175,7 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
     });
     matches.push(result);
 
-  } else if (newItem.type === "onepiece" && matchItem.type === "outerwear") {
+  } else if (newItem.type === "onepiece" && matchItem.type === "outer") {
     const result = createResult({
       onepiece: newItem.name,
       outer: matchItem.name,

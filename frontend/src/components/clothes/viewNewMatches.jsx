@@ -109,7 +109,7 @@ const ViewNewMatches = ({ newItemName, newItemType }) => {
 
   return (
     <div className="view-matches-container">
-      <h3>New Matches for {newItemName}</h3>
+      <h3>New Outfits for {newItemName}</h3>
 
       {error && <p className="error-text">{error}</p>}
       {matches.length === 0 && !error && (
