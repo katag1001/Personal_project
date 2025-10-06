@@ -35,7 +35,7 @@ const ViewToday = () => {
 
           maxRankOutfits.forEach((match, i) => {
             console.log(`[STEP 3] Outfit[${i}] =`, match);
-            ['top', 'bottom', 'outerwear', 'onepiece'].forEach((type) => {
+            ['top', 'bottom', 'outer', 'onepiece'].forEach((type) => {
               const name = match[type];
               if (name) {
                 console.log(`[STEP 3.1] Adding item to fetch: ${type} - ${name}`);
@@ -51,7 +51,7 @@ const ViewToday = () => {
           ];
 
           const fetchItem = async ({ type, name }) => {
-            const apiType = type === 'outerwear' ? 'outer' : type; // map outerwear → outer
+            const apiType = type === 'outer' ? 'outer' : type;
             console.log(`[FETCH] Fetching item: type=${type}, name=${name}, apiType=${apiType}`);
             try {
               const res = await axios.post(`/api/clothing/${apiType}/${name}`, {
@@ -206,20 +206,15 @@ const ViewToday = () => {
   }
 
   const outfit = filteredOutfits[currentIndex];
-  const types = ['top', 'bottom', 'outerwear', 'onepiece'];
+  const types = ['top', 'bottom', 'outer', 'onepiece'];
   const images = types.map((type) => renderItemImage(type, outfit[type])).filter(Boolean);
   
 
-
-
-
-
   return (
     <div className="view-today-container">
-      <h2 className="today-title">Today's Best Outfit (Rank {outfit.rank})</h2>
 
       <div className="horizontal-scroll-wrapper">
-        <button className="scroll-arrow left-arrow" onClick={goPrev}>&lt;</button>
+        <button className="scroll-arrow" onClick={goPrev}>&lt;</button>
 
         <div className="clothing-card">
           <div className="today-image-group">
@@ -236,7 +231,7 @@ const ViewToday = () => {
           </div>
         </div>
 
-        <button className="scroll-arrow right-arrow" onClick={goNext}>&gt;</button>
+        <button className="scroll-arrow" onClick={goNext}>&gt;</button>
       </div>
     </div>
   );

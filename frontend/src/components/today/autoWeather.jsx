@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import { useGeolocation } from "@uidotdev/usehooks";
+import './AutoWeather.css';
 
 const AutoWeather = () => {
   const location = useGeolocation();
@@ -87,22 +88,23 @@ const AutoWeather = () => {
     }
   }, [location]);
 
-  if (location.loading) return <p>Loading location... (please enable location permissions)</p>;
-  if (location.error) return <p style={{ color: 'red' }}>Unable to access location: {location.error.message}</p>;
-
   return (
-    <div style={{ maxWidth: 700, margin: '2rem auto', fontFamily: 'Arial, sans-serif' }}>
+    <div className="weather">
+      {location.loading && (
+        <p className="weather-text">Loading location... (please enable location permissions)</p>
+      )}
+      {location.error && (
+        <p className="weather-error">Unable to access location: {location.error.message}</p>
+      )}
       {weather ? (
         <>
-          <p><strong>Today's Weather:</strong></p>
-          <p>Min Temp: {weather.min}°C</p>
-          <p>Max Temp: {weather.max}°C</p>
-          <p><strong>Season:</strong> {getSeason()}</p>
+          <p className="weather-text">{getSeason().charAt(0).toUpperCase() + getSeason().slice(1)}</p>
+          <p className="weather-text">{weather.min}°C - {weather.max}°C</p>
         </>
       ) : (
-        !error && <p>Loading weather...</p>
+        !error && <p className="weather-text">Loading weather...</p>
       )}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="weather-error">{error}</p>}
     </div>
   );
 };

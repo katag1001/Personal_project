@@ -26,7 +26,7 @@ const CreateMatch = () => {
         const [tops, bottoms, outers, onepieces] = await Promise.all([
           axios.post('/api/clothing/top', { username: user }).then(res => res.data),
           axios.post('/api/clothing/bottom', { username: user }).then(res => res.data),
-          axios.post('/api/clothing/outerwear', { username: user }).then(res => res.data),
+          axios.post('/api/clothing/outer', { username: user }).then(res => res.data),
           axios.post('/api/clothing/onepiece', { username: user }).then(res => res.data),
         ]);
         setClothesData({ tops, bottoms, outers, onepieces });

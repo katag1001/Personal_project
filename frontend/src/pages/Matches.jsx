@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../components/header';
 import ViewMatches from '../components/matches/viewMatches';
 import { Link } from 'react-router-dom';
-import './Clothes.css';
+import './Pages.css';
 import './Matches.css';
 
 
@@ -19,6 +19,7 @@ const Matches = ({ loggedIn, logout }) => {
       </div>
 
       <div className="match-page-container">
+
       <Link to="/oldmatches">
         <button className="regular-button">View Rejected Outfits</button>
       </Link>

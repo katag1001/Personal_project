@@ -20,8 +20,9 @@
 
 .view-matches-container h2 {
   font-family: 'Playfair Display', serif;
-  font-size: 3rem;
+  font-size: 2.7rem;
   text-transform: uppercase;
+  color: black;
 }
 
 .view-matches-container h3 {

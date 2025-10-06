@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from '../components/header';
 import CreateClothes from '../components/clothes/createClothes';
-import './Clothes.css';
+import './Pages.css';
 
 const AddClothes = ({ loggedIn }) => {
   return (

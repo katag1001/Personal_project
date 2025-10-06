@@ -24,7 +24,7 @@ const RejectedMatches = () => {
             ['top', 'bottom', 'outer', 'onepiece'].forEach(type => {
               const name = match[type];
               if (name) {
-                const typeKey = type === 'outer' ? 'outerwear' : type;
+                const typeKey = type === 'outer' ? 'outer' : type;
                 itemsToFetch.push({ type: typeKey, name });
               }
             });
@@ -73,7 +73,7 @@ const RejectedMatches = () => {
   // Render item image
   const renderItemImage = (type, name) => {
     if (!name) return null;
-    const lookupType = type === 'outer' ? 'outerwear' : type;
+    const lookupType = type === 'outer' ? 'outer' : type;
     const item = itemDetails[`${lookupType}_${name}`];
     if (item?.imageUrl) {
       return (

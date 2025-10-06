@@ -12,7 +12,7 @@ const ViewClothes = () => {
   const [editingType, setEditingType] = useState(null);
   const [formData, setFormData] = useState({});
 
-  const clothingTypes = ['top', 'bottom', 'outerwear', 'onepiece'];
+  const clothingTypes = ['top', 'bottom', 'outer', 'onepiece'];
   const scrollRefs = useRef({});
 
   const fetchAllItems = async () => {
@@ -148,7 +148,7 @@ const ViewClothes = () => {
                   <p className="no-items">No items found.</p>
                 ) : (
                   itemsByType[type].map((item) => (
-                    <div key={item._id} className="clothing-card">
+                    <div key={item._id} className="clothing-card-viewclothes">
                       {item.imageUrl && (
                         <img
                           src={item.imageUrl}

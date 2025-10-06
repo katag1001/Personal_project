@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../components/header';
 import { Link } from 'react-router-dom';
 import RejectedMatches from '../components/matches/rejectedMatches';
-import './Clothes.css';
+import './Pages.css';
 import './Matches.css';
 
 

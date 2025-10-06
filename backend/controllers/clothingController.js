@@ -1,6 +1,6 @@
 const Top = require('../models/Top');
 const Bottom = require('../models/Bottom');
-const Outerwear = require('../models/Outer');
+const Outer = require('../models/Outer');
 const OnePiece = require('../models/OnePiece');
 const Match = require('../models/Match');
 const { processMatches } = require('../services/matchService');
@@ -9,7 +9,7 @@ const { processMatches } = require('../services/matchService');
 function getModel(type) {
   if (type === 'top') return Top;
   if (type === 'bottom') return Bottom;
-  if (type === 'outerwear') return Outerwear;
+  if (type === 'outer') return Outer;
   if (type === 'onepiece') return OnePiece;
   return null;
 }
@@ -34,14 +34,14 @@ exports.createItem = async (req, res) => {
     const item = new Model(req.body);
     await item.save();
 
-    const [tops, bottoms, outerwear, onepieces] = await Promise.all([
+    const [tops, bottoms, outer, onepieces] = await Promise.all([
       Top.find({'username':username}),
       Bottom.find({'username':username}),
-      Outerwear.find({'username':username}),
+      Outer.find({'username':username}),
       OnePiece.find({'username':username})
     ]);
 
-    processMatches(item, tops, bottoms, outerwear, onepieces);
+    processMatches(item, tops, bottoms, outer, onepieces);
     console.log("Match processing completed.");
     res.json(item);
 
@@ -103,8 +103,6 @@ exports.getItemByName = async (req, res) => {
   }
 };
 
-
-
 exports.updateItem = async (req, res) => {
   const { type, id } = req.params;
   const Model = getModel(type);
@@ -133,14 +131,14 @@ exports.updateItem = async (req, res) => {
       console.log(`Deleted ${matchDeleteResult.deletedCount} matches using this ${type}`);
 
       // Step 4: Process new matches using the updated item
-      const [tops, bottoms, outerwear, onepieces] = await Promise.all([
+      const [tops, bottoms, outer, onepieces] = await Promise.all([
         Top.find(),
         Bottom.find(),
-        Outerwear.find(),
+        Outer.find(),
         OnePiece.find()
       ]);
 
-      processMatches(updatedItem, tops, bottoms, outerwear, onepieces);
+      processMatches(updatedItem, tops, bottoms, outer, onepieces);
       console.log("Match processing completed after update.");
     }
 

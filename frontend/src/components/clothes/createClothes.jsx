@@ -154,7 +154,7 @@ const CreateClothes = () => {
               <select name="type" value={formData.type} onChange={handleChange}>
                 <option value="top">Top</option>
                 <option value="bottom">Bottom</option>
-                <option value="outerwear">Outerwear</option>
+                <option value="outer">Outer</option>
                 <option value="onepiece">OnePiece</option>
               </select>
             </label>

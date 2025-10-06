@@ -26,7 +26,7 @@ const ViewMatches = () => {
           ['top', 'bottom', 'outer', 'onepiece'].forEach((key) => {
             const name = match[key];
             if (name) {
-              const type = key === 'outer' ? 'outerwear' : key;
+              const type = key === 'outer' ? 'outer' : key;
               itemsToFetch.push({ type, name });
             }
           });
@@ -84,7 +84,7 @@ const ViewMatches = () => {
   const renderItemImage = (type, name) => {
     if (!name) return null;
 
-    const lookupType = type === 'outer' ? 'outerwear' : type;
+    const lookupType = type === 'outer' ? 'outer' : type;
     const item = itemDetails[`${lookupType}_${name}`];
 
     if (item?.imageUrl) {

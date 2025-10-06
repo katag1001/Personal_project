@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/header';
+import './Pages.css';
 
 const Homepage = ({ loggedIn, logout }) => {
   return (
     <>
+      <div className="full-page">
       <Header loggedIn={loggedIn} />
-      <div className="App">
+      <div className="page-container">
         {loggedIn ? (
           <>
             <p>Welcome!</p>
@@ -18,6 +20,7 @@ const Homepage = ({ loggedIn, logout }) => {
             <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
           </>
         )}
+      </div>
       </div>
     </>
   );

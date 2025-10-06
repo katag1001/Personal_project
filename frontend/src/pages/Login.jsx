@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Header from '../components/header';
+import './Pages.css';
 
 const Login = ({ login, logout, loggedIn }) => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -35,7 +36,7 @@ const Login = ({ login, logout, loggedIn }) => {
 
   if (loggedIn) {
     return (
-      <div>
+      <div className="full-page">
         <Header loggedIn={loggedIn} />
         <h2>You are logged in</h2>
         {message && <p>{message}</p>}

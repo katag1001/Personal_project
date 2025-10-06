@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Header from '../components/header';
+import './Pages.css';
+
 
 const Register = ({ loggedIn, logout }) => {
   const [form, setForm] = useState({
@@ -30,7 +32,7 @@ const Register = ({ loggedIn, logout }) => {
 
   return (
     
-    <div>
+    <div className="full-page">
       <Header loggedIn={loggedIn} />
       <h2>Register</h2>
       {message && <p>{message}</p>}

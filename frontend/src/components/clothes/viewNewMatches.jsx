@@ -20,7 +20,7 @@ const ViewNewMatches = ({ newItemName, newItemType }) => {
 
         // Filter matches to include the new item
         const relevantMatches = response.data.filter(match => {
-          if (newItemType === 'outerwear') return match.outer === newItemName;
+          if (newItemType === 'outer') return match.outer === newItemName;
           return match[newItemType] === newItemName;
         });
 
@@ -31,7 +31,7 @@ const ViewNewMatches = ({ newItemName, newItemType }) => {
           ['top', 'bottom', 'outer', 'onepiece'].forEach(key => {
             const name = match[key];
             if (name) {
-              const type = key === 'outer' ? 'outerwear' : key;
+              const type = key === 'outer' ? 'outer' : key;
               itemsToFetch.push({ type, name });
             }
           });
@@ -88,7 +88,7 @@ const ViewNewMatches = ({ newItemName, newItemType }) => {
 
   const renderItemImage = (type, name) => {
     if (!name) return null;
-    const lookupType = type === 'outer' ? 'outerwear' : type;
+    const lookupType = type === 'outer' ? 'outer' : type;
     const item = itemDetails[`${lookupType}_${name}`];
 
     if (item?.imageUrl) {
