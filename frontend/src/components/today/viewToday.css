@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Didot&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+.view-today-container {
+  max-width: 100%;
+  margin: 2rem auto;
+  font-family: 'Helvetica Neue', sans-serif;
+  color: #111;
+  background-color: #fff;
+  padding: 1rem;
+  text-align: center;
+}
+
+.today-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+}
+
+.horizontal-scroll-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+.clothing-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid black;
+  background-color: white;
+  padding: 1rem;
+  width: 320px;
+  min-height: 300px;
+}
+
+.scroll-arrow {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #111;
+  width: 30px;
+  height: 100%;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.scroll-arrow:hover {
+  color: #666;
+}
+
+.today-image-group {
+  display: grid;
+  /* grid up to 3 columns */
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+  width: 100%;
+  gap: 0;
+  margin-bottom: 1rem;
+}
+
+.today-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.today-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.regular-button {
+  all: unset;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #111;
+  background: none;
+  padding: 0;
+  margin: 0;
+  text-transform: capitalize;
+  position: relative;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  outline: none;
+}
+
+.regular-button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -2px;
+  height: 1px;
+  background-color: #111;
+  transition: right 0.2s ease;
+}
+
+.regular-button:hover::after,
+.regular-button:focus::after {
+  right: 0;
+}
+
+.regular-button:focus,
+.regular-button:active {
+  outline: none;
+  border: none;
+}
+
+.today-message {
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+  font-size: 1rem;
+}
