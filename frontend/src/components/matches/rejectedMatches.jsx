@@ -5,6 +5,7 @@ const RejectedMatches = () => {
   const [matches, setMatches] = useState([]);
   const [itemDetails, setItemDetails] = useState({});
   const [error, setError] = useState(null);
+  const [selectedSeason, setSelectedSeason] = useState(null); // Filter state
 
   // Fetch all matches on mount
   useEffect(() => {
@@ -15,21 +16,24 @@ const RejectedMatches = () => {
         const fetchedMatches = response.data;
         setMatches(fetchedMatches);
 
-        // ==== Extract item names and types from rejected matches ====
+        // Extract item names and types from rejected matches
         const itemsToFetch = [];
         fetchedMatches
           .filter(match => match.rejected)
           .forEach(match => {
             ['top', 'bottom', 'outer', 'onepiece'].forEach(type => {
               const name = match[type];
-              if (name) itemsToFetch.push({ type, name });
+              if (name) {
+                const typeKey = type === 'outer' ? 'outerwear' : type;
+                itemsToFetch.push({ type: typeKey, name });
+              }
             });
           });
 
-        // ==== Remove duplicates ====
+        // Remove duplicates
         const uniqueItems = [...new Set(itemsToFetch.map(i => `${i.type}_${i.name}`))];
 
-        // ==== Fetch each item from clothing API ====
+        // Fetch each item from clothing API
         const fetchItem = async ({ type, name }) => {
           try {
             const res = await axios.post(`/api/clothing/${type}/${name}`, {
@@ -43,12 +47,13 @@ const RejectedMatches = () => {
 
         const fetchedItems = await Promise.all(
           uniqueItems.map(key => {
-            const [type, name] = key.split('_');
+            const [type, ...nameParts] = key.split('_');
+            const name = nameParts.join('_');
             return fetchItem({ type, name });
           })
         );
 
-        // ==== Store fetched item data by key ====
+        // Store fetched item data by key
         const itemMap = {};
         fetchedItems.forEach(entry => {
           if (entry && entry.data && !entry.data.error) {
@@ -68,14 +73,15 @@ const RejectedMatches = () => {
   // Render item image
   const renderItemImage = (type, name) => {
     if (!name) return null;
-    const item = itemDetails[`${type}_${name}`];
+    const lookupType = type === 'outer' ? 'outerwear' : type;
+    const item = itemDetails[`${lookupType}_${name}`];
     if (item?.imageUrl) {
       return (
-        <div style={{ display: 'inline-block', marginRight: '1rem' }}>
+        <div className="match-image-wrapper">
           <img
             src={item.imageUrl}
             alt={`${type}-${name}`}
-            style={{ maxWidth: '150px', maxHeight: '150px', objectFit: 'cover' }}
+            className="match-image"
           />
         </div>
       );
@@ -129,61 +135,72 @@ const RejectedMatches = () => {
     }
   };
 
+  // Filter rejected matches by selected season
+  const filteredMatches = matches.filter((match) => {
+    if (!match.rejected) return false;
+    if (!selectedSeason) return true;
+    return match[selectedSeason];
+  });
+
+  // Toggle season selection
+  const toggleSeasonFilter = (season) => {
+    setSelectedSeason((prev) => (prev === season ? null : season));
+  };
+
+  // Capitalize season names
+  const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+
   return (
-    <>
-      <h2>Rejected Outfit Matches</h2>
+    <div className="view-matches-container">
+      <h2>Rejected Outfits</h2>
 
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      {/* Season filter buttons */}
+      <div className="season-filters">
+        {['spring', 'summer', 'autumn', 'winter'].map((season) => (
+          <button
+            key={season}
+            className={`text-button ${selectedSeason === season ? 'active' : ''}`}
+            onClick={() => toggleSeasonFilter(season)}
+          >
+            {capitalize(season)}
+          </button>
+        ))}
+      </div>
 
-      {matches.filter(match => match.rejected).length === 0 && !error && <p>No rejected matches found.</p>}
+      {error && <p className="error-text">Error: {error}</p>}
 
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {matches.filter(match => match.rejected).map((match) => (
-          <li key={match._id} style={{ marginBottom: '2rem', borderBottom: '1px solid #ccc', paddingBottom: '1rem' }}>
-            
-            {/* ==== Images ==== */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+      {filteredMatches.length === 0 && !error && (
+        <p className="no-matches-text">No rejected matches found.</p>
+      )}
+
+      <div className="matches-grid">
+        {filteredMatches.map((match) => (
+          <div key={match._id} className="match-card">
+            <div className="match-images">
               {renderItemImage('top', match.top)}
               {renderItemImage('bottom', match.bottom)}
               {renderItemImage('outer', match.outer)}
               {renderItemImage('onepiece', match.onepiece)}
             </div>
 
-
-           
-            {/* ==== Action Buttons ==== */}
-            <button
-              onClick={() => handleReinstate(match._id)}
-              style={{
-                marginRight: '1rem',
-                marginTop: '0.5rem',
-                color: 'white',
-                backgroundColor: 'green',
-                border: 'none',
-                padding: '0.5rem 1rem',
-                cursor: 'pointer'
-              }}
-            >
-              Reinstate Match
-            </button>
-
-            <button
-              onClick={() => handleDelete(match._id)}
-              style={{
-                marginTop: '0.5rem',
-                color: 'white',
-                backgroundColor: 'red',
-                border: 'none',
-                padding: '0.5rem 1rem',
-                cursor: 'pointer'
-              }}
-            >
-              Delete
-            </button>
-          </li>
+            <div className="button-row">
+              <button
+                className="text-button"
+                onClick={() => handleReinstate(match._id)}
+              >
+                Restore Outfit
+              </button>
+              <button
+                className="text-button"
+                onClick={() => handleDelete(match._id)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         ))}
-      </ul>
-    </>
+      </div>
+    </div>
   );
 };
 

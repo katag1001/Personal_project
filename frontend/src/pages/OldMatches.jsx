@@ -14,11 +14,14 @@ const OldMatches = ({ loggedIn, logout }) => {
 
       <div className="sticky-upload-container">
         <Link to="/buildmatches">
-          <button className="top-button">Build Matches</button>
+          <button className="top-button">Build Outfits</button>
         </Link>
       </div>
 
       <div className="match-page-container">
+      <Link to="/matches">
+      <button className="regular-button"> Back to Current Outfits</button>
+      </Link>
       <RejectedMatches />
       </div>
       </div>
