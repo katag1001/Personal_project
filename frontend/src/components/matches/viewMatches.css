@@ -24,6 +24,11 @@
   text-transform: uppercase;
 }
 
+.view-matches-container h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+}
 .season-filters {
   display: flex;
   gap: 1rem;

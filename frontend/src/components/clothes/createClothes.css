@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Didot&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+.create-clothes-container {
+  font-family: 'Helvetica Neue', sans-serif;
+  color: #111;
+  background-color: #fff;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 8px 0px;
+  width: 100%;
+}
+
+@media (max-width: 620px) {
+  .create-clothes-container {
+    max-width: 90%;
+  }
+}
+
+
+.form-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.clothing-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.clothing-form label {
+  font-size: 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.clothing-form input,
+.clothing-form select {
+  padding: 8px;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.image-upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.uploaded-image-preview {
+  max-width: 100px;
+  border: 1px solid #ddd;
+  padding: 4px;
+  margin-top: 5px;
+}
+
+.season-checkboxes {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.season-checkboxes label {
+  font-size: 0.9rem;
+}
+
+.submit-button {
+  margin-top: 1.5rem;
+  padding: 10px 20px;
+  background-color: black;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease;
+}
+
+.submit-button:hover {
+  background-color: #444;
+}
+
+.message-text {
+  margin-top: 1rem;
+  font-style: italic;
+  text-align: center;
+  color: green;
+}
+
+.item-created-section {
+  margin-top: 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center; 
+}
+
+.regular-button {
+  all: unset;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #111;
+  background: none;
+  width: fit-content;
+  padding: 0;
+  margin: 0;
+  text-transform: capitalize;
+  position: relative;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  outline: none;
+}
+
+.regular-button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -2px;
+  height: 1px;
+  background-color: #111;
+  transition: right 0.2s ease;
+}
+
+.regular-button:hover::after,
+.regular-button:focus::after {
+  right: 0;
+}
+
+.new-match-section {
+  margin-top: 8px;
+  width: 100%
+}
+
+
+
+.item-created-section {
+  width: 100%;
+}

@@ -170,7 +170,7 @@ const RejectedMatches = () => {
       {error && <p className="error-text">Error: {error}</p>}
 
       {filteredMatches.length === 0 && !error && (
-        <p className="no-matches-text">No rejected matches found.</p>
+        <p className="no-matches-text">No rejected outfits found.</p>
       )}
 
       <div className="matches-grid">

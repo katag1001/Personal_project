@@ -3,6 +3,7 @@ import axios from 'axios';
 import UploadImages from './uploadPics';
 import ViewNewMatches from './viewNewMatches';
 import colorOptions from '../../constants/colorOptions';
+import './createClothes.css';
 
 const styleOptions = ["plain", "patterned"];
 
@@ -24,6 +25,7 @@ const CreateClothes = () => {
 
   const [message, setMessage] = useState('');
   const [justCreatedItem, setJustCreatedItem] = useState(null);
+  const [showForm, setShowForm] = useState(true); // 👈 New state to control visibility
 
   const handleChange = (e) => {
     const { name, value, type, checked, multiple, options } = e.target;
@@ -62,7 +64,10 @@ const CreateClothes = () => {
         setMessage(`Item created: ${res.data.name}`);
         setJustCreatedItem({ name: res.data.name, type: res.data.type });
 
-        // ✅ Reset the form here
+        // ✅ Hide form and show matches
+        setShowForm(false);
+
+        // ✅ Reset form data
         setFormData({
           name: '',
           imageUrl: '',
@@ -85,87 +90,117 @@ const CreateClothes = () => {
     }
   };
 
+  const handleAddNewItem = () => {
+    setShowForm(true);
+    setJustCreatedItem(null);
+    setMessage('');
+  };
+
   return (
-    <div style={{ maxWidth: 600, margin: 'auto' }}>
-      <h2>Add Clothing Item</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Name: <input name="name" value={formData.name} onChange={handleChange} required />
-        </label><br />
+    <div>
+      {showForm ? (
+        <>
+        <div className="create-clothes-container">
+          <h2 className="form-title">Add Clothing Item</h2>
+          <form className="clothing-form" onSubmit={handleSubmit}>
+            <label>
+              Name:
+              <input name="name" value={formData.name} onChange={handleChange} required />
+            </label>
 
-        <div>
-          Image URL: <UploadImages setFormData={setFormData} formData={formData} />
-          {formData.imageUrl && (
-            <img
-              src={formData.imageUrl}
-              alt="Clothing"
-              style={{ maxWidth: '100px', display: 'block', marginTop: '10px' }}
-            />
+            <div className="image-upload-section">
+              <span>Image URL:</span>
+              <UploadImages setFormData={setFormData} formData={formData} />
+              {formData.imageUrl && (
+                <img
+                  src={formData.imageUrl}
+                  alt="Clothing"
+                  className="uploaded-image-preview"
+                />
+              )}
+            </div>
+
+            <label>
+              Min Temp:
+              <input name="min_temp" type="number" value={formData.min_temp} onChange={handleChange} required />
+            </label>
+
+            <label>
+              Max Temp:
+              <input name="max_temp" type="number" value={formData.max_temp} onChange={handleChange} required />
+            </label>
+
+            <label>
+              Colors:
+              <select name="colors" multiple value={formData.colors} onChange={handleChange}>
+                {colorOptions.map(color => (
+                  <option key={color} value={color}>{color}</option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              Style:
+              <select name="styles" value={formData.styles} onChange={handleChange} required>
+                <option value="">Select a style</option>
+                {styleOptions.map(style => (
+                  <option key={style} value={style}>{style}</option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              Type:
+              <select name="type" value={formData.type} onChange={handleChange}>
+                <option value="top">Top</option>
+                <option value="bottom">Bottom</option>
+                <option value="outerwear">Outerwear</option>
+                <option value="onepiece">OnePiece</option>
+              </select>
+            </label>
+
+            <div className="season-checkboxes">
+              <label>
+                <input type="checkbox" name="spring" checked={formData.spring} onChange={handleChange} />
+                Spring
+              </label>
+              <label>
+                <input type="checkbox" name="summer" checked={formData.summer} onChange={handleChange} />
+                Summer
+              </label>
+              <label>
+                <input type="checkbox" name="autumn" checked={formData.autumn} onChange={handleChange} />
+                Autumn
+              </label>
+              <label>
+                <input type="checkbox" name="winter" checked={formData.winter} onChange={handleChange} />
+                Winter
+              </label>
+            </div>
+
+            <button type="submit" className="submit-button">Add Item</button>
+          </form>
+
+          {message && <p className="message-text">{message}</p>}
+          </div>
+        </>
+      ) : (
+        <><div className="item-created-section">
+          
+          <button className="regular-button" onClick={handleAddNewItem}>
+            Add New Item
+          </button>
+
+          {justCreatedItem && (
+            <div className="new-match-section">
+              <ViewNewMatches
+                newItemName={justCreatedItem.name}
+                newItemType={justCreatedItem.type}
+              />
+            </div>
           )}
-        </div><br />
-
-        <label>
-          Min Temp: <input name="min_temp" type="number" value={formData.min_temp} onChange={handleChange} required />
-        </label><br />
-
-        <label>
-          Max Temp: <input name="max_temp" type="number" value={formData.max_temp} onChange={handleChange} required />
-        </label><br />
-
-        <label>
-          Colors:
-          <select name="colors" multiple value={formData.colors} onChange={handleChange}>
-            {colorOptions.map(color => (
-              <option key={color} value={color}>{color}</option>
-            ))}
-          </select>
-        </label><br />
-
-        <label>
-          Style:
-          <select name="styles" value={formData.styles} onChange={handleChange} required>
-            <option value="">Select a style</option>
-            {styleOptions.map(style => (
-              <option key={style} value={style}>{style}</option>
-            ))}
-          </select>
-        </label><br />
-
-        <label>
-          Type:
-          <select name="type" value={formData.type} onChange={handleChange}>
-            <option value="top">Top</option>
-            <option value="bottom">Bottom</option>
-            <option value="outerwear">Outerwear</option>
-            <option value="onepiece">OnePiece</option>
-          </select>
-        </label><br />
-
-        <label>
-          Spring: <input type="checkbox" name="spring" checked={formData.spring} onChange={handleChange} />
-        </label><br />
-        <label>
-          Summer: <input type="checkbox" name="summer" checked={formData.summer} onChange={handleChange} />
-        </label><br />
-        <label>
-          Autumn: <input type="checkbox" name="autumn" checked={formData.autumn} onChange={handleChange} />
-        </label><br />
-        <label>
-          Winter: <input type="checkbox" name="winter" checked={formData.winter} onChange={handleChange} />
-        </label><br />
-
-        <button type="submit">Add Item</button>
-      </form>
-
-      {message && <p>{message}</p>}
-
-      {justCreatedItem && (
-        <div style={{ marginTop: '2rem' }}>
-          <ViewNewMatches
-            newItemName={justCreatedItem.name}
-            newItemType={justCreatedItem.type}
-          />
-        </div>
+          </div>
+        </>
       )}
     </div>
   );

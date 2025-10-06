@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import axios from 'axios';
 import DeleteMatches from '../matches/deleteMatches';
 import UpdateMatches from '../matches/updateMatches';
+import '../matches/viewMatches.css';
 
 const ViewNewMatches = ({ newItemName, newItemType }) => {
   const [matches, setMatches] = useState([]);
@@ -13,9 +14,11 @@ const ViewNewMatches = ({ newItemName, newItemType }) => {
     const fetchMatches = async () => {
       try {
         setError(null);
-        const response = await axios.post('/api/match', { username: localStorage.getItem('user') });
+        const response = await axios.post('/api/match', {
+          username: localStorage.getItem('user')
+        });
 
-        // Filter matches to only include those that include the new item
+        // Filter matches to include the new item
         const relevantMatches = response.data.filter(match => {
           if (newItemType === 'outerwear') return match.outer === newItemName;
           return match[newItemType] === newItemName;
@@ -38,7 +41,9 @@ const ViewNewMatches = ({ newItemName, newItemType }) => {
 
         const fetchItem = async ({ type, name }) => {
           try {
-            const res = await axios.post(`/api/clothing/${type}/${name}`, { username: localStorage.getItem('user') });
+            const res = await axios.post(`/api/clothing/${type}/${name}`, {
+              username: localStorage.getItem('user')
+            });
             return { key: `${type}_${name}`, data: res.data };
           } catch {
             return null;
@@ -88,11 +93,11 @@ const ViewNewMatches = ({ newItemName, newItemType }) => {
 
     if (item?.imageUrl) {
       return (
-        <div style={{ display: 'inline-block', marginRight: '1rem' }}>
+        <div className="match-image-wrapper">
           <img
             src={item.imageUrl}
             alt={`${type}-${name}`}
-            style={{ maxWidth: '150px', maxHeight: '150px', objectFit: 'cover' }}
+            className="match-image"
           />
         </div>
       );
@@ -100,54 +105,54 @@ const ViewNewMatches = ({ newItemName, newItemType }) => {
     return null;
   };
 
+  const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+
   return (
-    <div>
-      <h2>New Matches for: {newItemName}</h2>
+    <div className="view-matches-container">
+      <h3>New Matches for {newItemName}</h3>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {matches.length === 0 && !error && <p>No new matches found.</p>}
+      {error && <p className="error-text">{error}</p>}
+      {matches.length === 0 && !error && (
+        <p className="no-matches-text">No new matches found.</p>
+      )}
 
-      <ul style={{ listStyle: 'none', padding: 0 }}>
+      <div className="matches-grid">
         {matches.filter(match => !match.rejected).map(match => (
-          <li key={match._id} style={{ marginBottom: '2rem', borderBottom: '1px solid #ccc', paddingBottom: '1rem' }}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+          <div key={match._id} className="match-card">
+            <div className="match-images">
               {renderItemImage('top', match.top)}
               {renderItemImage('bottom', match.bottom)}
               {renderItemImage('outer', match.outer)}
               {renderItemImage('onepiece', match.onepiece)}
             </div>
 
-            <p><strong>Temperature Range:</strong> {match.min_temp}° - {match.max_temp}°</p>
-            <p><strong>Seasons:</strong> {
-              ['spring', 'summer', 'autumn', 'winter']
-                .filter(season => match[season])
-                .map(season => season.charAt(0).toUpperCase() + season.slice(1))
-                .join(', ') || 'N/A'
-            }</p>
+            <div className="match-info">
+              <div className="item-info">
+                <div>{match.min_temp}° - {match.max_temp}°</div>
+                <div>
+                  {
+                    ['spring', 'summer', 'autumn', 'winter']
+                      .filter(season => match[season])
+                      .map(capitalize)
+                      .join(', ') || 'N/A'
+                  }
+                </div>
+              </div>
 
-            <DeleteMatches
-              matchId={match._id}
-              onDeleteSuccess={handleDeleteSuccess}
-              onError={handleError}
-            />
-
-            <button
-              onClick={() => setEditingMatch(match)}
-              style={{
-                marginTop: '0.5rem',
-                color: 'white',
-                backgroundColor: 'blue',
-                border: 'none',
-                padding: '0.5rem 1rem',
-                cursor: 'pointer',
-                marginLeft: '1rem'
-              }}
-            >
-              Edit
-            </button>
-          </li>
+              <div className="button-row">
+                <DeleteMatches
+                  matchId={match._id}
+                  onDeleteSuccess={handleDeleteSuccess}
+                  onError={handleError}
+                />
+                <button className="text-button" onClick={() => setEditingMatch(match)}>
+                  Edit
+                </button>
+              </div>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
 
       {editingMatch && (
         <UpdateMatches

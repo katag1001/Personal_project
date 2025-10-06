@@ -134,7 +134,7 @@ const ViewMatches = () => {
 
       {error && <p className="error-text">{error}</p>}
       {filteredMatches.length === 0 && !error && (
-        <p className="no-matches-text">No matches found.</p>
+        <p className="no-matches-text">No outfits found.</p>
       )}
 
       <div className="matches-grid">

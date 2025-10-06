@@ -3,7 +3,6 @@ import Header from '../components/header';
 import ViewClothes from '../components/clothes/viewClothes';
 import { Link } from 'react-router-dom';
 import './Clothes.css';
-import './Matches.css';
 
 const Clothes = ({ loggedIn, logout }) => {
   return (
