@@ -18,6 +18,11 @@
   align-items: center;
 }
 
+.view-clothes-container form {
+  width: 100%;
+}
+
+
 .title {
   font-size: 1.5rem;
   margin-bottom: 1rem;
@@ -40,6 +45,7 @@
   padding: 0;
   margin: 10px 0;
   width: 100%;
+  
 }
 
 .scroll-container {
@@ -50,6 +56,7 @@
   scrollbar-width: none;
   padding: 10px 0;
   width: 100%;
+ 
 }
 
 .scroll-container::-webkit-scrollbar {
@@ -149,13 +156,13 @@
 .clothing-section {
   position: relative;
   width: 100%;
-
 }
 
 .section-wrapper {
   position: relative;
   padding-top: 5rem; 
   width: 100%;
+  
 }
 
 .section-title {

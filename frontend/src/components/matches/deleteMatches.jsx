@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './viewMatches.css';
 
 const DeleteMatches = ({ matchId, onDeleteSuccess, onError }) => {
   const [loading, setLoading] = useState(false);
@@ -25,14 +26,7 @@ const DeleteMatches = ({ matchId, onDeleteSuccess, onError }) => {
     <button
       onClick={handleDelete}
       disabled={loading}
-      style={{
-        marginTop: '0.5rem',
-        color: 'white',
-        backgroundColor: 'red',
-        border: 'none',
-        padding: '0.5rem 1rem',
-        cursor: 'pointer'
-      }}
+      className="delete-match-button"
     >
       {loading ? 'Deleting...' : 'Delete'}
     </button>

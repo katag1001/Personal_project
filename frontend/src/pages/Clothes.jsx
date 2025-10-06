@@ -3,6 +3,7 @@ import Header from '../components/header';
 import ViewClothes from '../components/clothes/viewClothes';
 import { Link } from 'react-router-dom';
 import './Clothes.css';
+import './Matches.css';
 
 const Clothes = ({ loggedIn, logout }) => {
   return (
@@ -12,7 +13,7 @@ const Clothes = ({ loggedIn, logout }) => {
   
   <div className="sticky-upload-container">
     <Link to="/addclothes">
-      <button className="upload-clothes-button">Upload Clothes</button>
+      <button className="top-button">Upload Clothes</button>
     </Link>
   </div>
 

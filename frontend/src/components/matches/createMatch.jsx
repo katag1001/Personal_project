@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
-
-const colorOptions = [
-  "navy", "soft white", "warm gray", "sage green",
-  "dusty rose", "mustard", "terracotta", "cream"
-];
+import '../clothes/viewClothes.css'; // ✅ Reuse the same CSS as ViewClothes
 
 const CreateMatch = () => {
   const [formData, setFormData] = useState({
@@ -24,18 +19,16 @@ const CreateMatch = () => {
 
   const [response, setResponse] = useState(null);
 
-  // Fetch all clothing data on mount
- useEffect(() => {
+  useEffect(() => {
     const fetchClothes = async () => {
-      const user = localStorage.getItem('user')
+      const user = localStorage.getItem('user');
       try {
         const [tops, bottoms, outers, onepieces] = await Promise.all([
-          axios.post('/api/clothing/top',{'username':user}).then(res => res.data),
-          axios.post('/api/clothing/bottom',{'username':user}).then(res => res.data),
-          axios.post('/api/clothing/outerwear',{'username':user}).then(res => res.data),
-          axios.post('/api/clothing/onepiece',{'username':user}).then(res => res.data),
+          axios.post('/api/clothing/top', { username: user }).then(res => res.data),
+          axios.post('/api/clothing/bottom', { username: user }).then(res => res.data),
+          axios.post('/api/clothing/outerwear', { username: user }).then(res => res.data),
+          axios.post('/api/clothing/onepiece', { username: user }).then(res => res.data),
         ]);
-        console.log(tops)
         setClothesData({ tops, bottoms, outers, onepieces });
       } catch (err) {
         console.error('Error fetching clothing data:', err);
@@ -60,7 +53,7 @@ const CreateMatch = () => {
 
     const selectedItems = ['top', 'bottom', 'outer', 'onepiece']
       .map(key => formData[key])
-      .filter(Boolean); // Remove nulls
+      .filter(Boolean);
 
     const allColors = [...new Set(selectedItems.flatMap(item => item.colors))];
 
@@ -111,39 +104,60 @@ const CreateMatch = () => {
   };
 
   const renderItems = (items, category) => (
-    <div style={{ marginBottom: '20px' }}>
-      <h4>{category.charAt(0).toUpperCase() + category.slice(1)}</h4>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-        {items.map(item => (
-          <div
-            key={item.name}
-            onClick={() => handleSelect(category, item)}
-            style={{
-              border: isSelected(category, item) ? '2px solid green' : '1px solid gray',
-              padding: '10px',
-              cursor: 'pointer',
-              width: '120px',
-              textAlign: 'center'
-            }}
-          >
-            <img src={item.imageUrl || 'https://via.placeholder.com/100'} alt={item.name} style={{ width: '100%', height: '100px', objectFit: 'cover' }} />
-            <p>{item.name}</p>
+    <div className="clothing-section">
+      <div className="section-wrapper">
+        <h3 className="section-title">{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+        <div className="horizontal-scroll-wrapper">
+          <div className="scroll-container">
+            {items.length === 0 ? (
+              <p className="no-items">No items found.</p>
+            ) : (
+              items.map(item => (
+                <div
+                  key={item._id}
+                  className="clothing-card"
+                  onClick={() => handleSelect(category, item)}
+                  style={{
+                    border: isSelected(category, item) ? '3px solid green' : '2px solid black',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {item.imageUrl && (
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="clothing-image"
+                    />
+                  )}
+                  <div className="clothing-details">
+                    <div className="item-name">{item.name}</div>
+                    <div className="item-info">
+                      <div>{item.min_temp}° - {item.max_temp}°</div>
+                      <div>{(item.colors || []).join(', ')}</div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
 
   return (
-    <div>
-      <h2>Create Match</h2>
+    <div className="view-clothes-container">
+      <h2 className="title">Create Match</h2>
+
+      <button onClick={handleSubmit} className="text-button" style={{ marginBottom: '2rem' }}>
+        Submit Match
+      </button>
+
       <form onSubmit={handleSubmit}>
         {renderItems(clothesData.tops, 'top')}
         {renderItems(clothesData.bottoms, 'bottom')}
         {renderItems(clothesData.outers, 'outer')}
         {renderItems(clothesData.onepieces, 'onepiece')}
-
-        <button type="submit">Submit Match</button>
       </form>
 
       {response && (

@@ -2,40 +2,43 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import DeleteMatches from './deleteMatches';
 import UpdateMatches from './updateMatches';
+import './viewMatches.css';
 
 const ViewMatches = () => {
   const [matches, setMatches] = useState([]);
   const [itemDetails, setItemDetails] = useState({});
   const [error, setError] = useState(null);
   const [editingMatch, setEditingMatch] = useState(null);
+  const [selectedSeason, setSelectedSeason] = useState(null); // Filter state
 
   useEffect(() => {
     const fetchMatches = async () => {
       try {
         setError(null);
-        const response = await axios.post('/api/match', { username: localStorage.getItem('user') });
+        const response = await axios.post('/api/match', {
+          username: localStorage.getItem('user'),
+        });
         const fetchedMatches = response.data;
         setMatches(fetchedMatches);
 
-        // Prepare items to fetch, translating 'outer' to 'outerwear' type for backend
         const itemsToFetch = [];
-        fetchedMatches.forEach(match => {
-          ['top', 'bottom', 'outer', 'onepiece'].forEach(key => {
+        fetchedMatches.forEach((match) => {
+          ['top', 'bottom', 'outer', 'onepiece'].forEach((key) => {
             const name = match[key];
             if (name) {
-              // Translate 'outer' key to 'outerwear' type
               const type = key === 'outer' ? 'outerwear' : key;
               itemsToFetch.push({ type, name });
             }
           });
         });
 
-        // Deduplicate by type_name key
-        const uniqueItems = [...new Set(itemsToFetch.map(i => `${i.type}_${i.name}`))];
+        const uniqueItems = [...new Set(itemsToFetch.map((i) => `${i.type}_${i.name}`))];
 
         const fetchItem = async ({ type, name }) => {
           try {
-            const res = await axios.post(`/api/clothing/${type}/${name}`, { username: localStorage.getItem('user') });
+            const res = await axios.post(`/api/clothing/${type}/${name}`, {
+              username: localStorage.getItem('user'),
+            });
             return { key: `${type}_${name}`, data: res.data };
           } catch {
             return null;
@@ -43,15 +46,15 @@ const ViewMatches = () => {
         };
 
         const fetchedItems = await Promise.all(
-          uniqueItems.map(key => {
+          uniqueItems.map((key) => {
             const [type, ...nameParts] = key.split('_');
-            const name = nameParts.join('_'); // In case names have underscores
+            const name = nameParts.join('_');
             return fetchItem({ type, name });
           })
         );
 
         const itemMap = {};
-        fetchedItems.forEach(entry => {
+        fetchedItems.forEach((entry) => {
           if (entry && entry.data && !entry.data.error) {
             itemMap[entry.key] = entry.data;
           }
@@ -67,32 +70,30 @@ const ViewMatches = () => {
   }, []);
 
   const handleDeleteSuccess = (id) => {
-    setMatches(prev => prev.filter(match => match._id !== id));
+    setMatches((prev) => prev.filter((match) => match._id !== id));
   };
 
   const handleUpdateSuccess = (updatedMatch) => {
-    setMatches(prev => prev.map(m => (m._id === updatedMatch._id ? updatedMatch : m)));
+    setMatches((prev) => prev.map((m) => (m._id === updatedMatch._id ? updatedMatch : m)));
   };
 
   const handleError = (msg) => {
     setError(msg);
   };
 
-  // Render images, translating 'outer' key to 'outerwear' type to get details from itemDetails
   const renderItemImage = (type, name) => {
     if (!name) return null;
 
-    // Translate type for 'outer' -> 'outerwear' so keys match itemDetails
     const lookupType = type === 'outer' ? 'outerwear' : type;
     const item = itemDetails[`${lookupType}_${name}`];
 
     if (item?.imageUrl) {
       return (
-        <div style={{ display: 'inline-block', marginRight: '1rem' }}>
+        <div className="match-image-wrapper">
           <img
             src={item.imageUrl}
             alt={`${type}-${name}`}
-            style={{ maxWidth: '150px', maxHeight: '150px', objectFit: 'cover' }}
+            className="match-image"
           />
         </div>
       );
@@ -100,59 +101,80 @@ const ViewMatches = () => {
     return null;
   };
 
+  // Filter matches by selected season
+  const filteredMatches = matches.filter((match) => {
+    if (match.rejected) return false;
+    if (!selectedSeason) return true;
+    return match[selectedSeason];
+  });
+
+  // Toggle season selection
+  const toggleSeasonFilter = (season) => {
+    setSelectedSeason((prev) => (prev === season ? null : season));
+  };
+
+  const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+
   return (
-    <>
-      <h2>Outfit Matches</h2>
+    <div className="view-matches-container">
+      <h2>Your outfits</h2>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {matches.length === 0 && !error && <p>No matches found.</p>}
+      {/* Season filter buttons */}
+      <div className="season-filters">
+        {['spring', 'summer', 'autumn', 'winter'].map((season) => (
+          <button
+            key={season}
+            className={`text-button ${selectedSeason === season ? 'active' : ''}`}
+            onClick={() => toggleSeasonFilter(season)}
+          >
+            {capitalize(season)}
+          </button>
+        ))}
+      </div>
 
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {matches.filter(match => !match.rejected).map(match => (
-          <li key={match._id} style={{ marginBottom: '2rem', borderBottom: '1px solid #ccc', paddingBottom: '1rem' }}>
-            {/* Images */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+      {error && <p className="error-text">{error}</p>}
+      {filteredMatches.length === 0 && !error && (
+        <p className="no-matches-text">No matches found.</p>
+      )}
+
+      <div className="matches-grid">
+        {filteredMatches.map((match) => (
+          <div key={match._id} className="match-card">
+            <div className="match-images">
               {renderItemImage('top', match.top)}
               {renderItemImage('bottom', match.bottom)}
-              {renderItemImage('outer', match.outer)} {/* type 'outer' mapped internally */}
+              {renderItemImage('outer', match.outer)}
               {renderItemImage('onepiece', match.onepiece)}
             </div>
 
-            {/* Match Info */}
-            <p><strong>Temperature Range:</strong> {match.min_temp}° - {match.max_temp}°</p>
-            <p><strong>Seasons:</strong> {
-              ['spring', 'summer', 'autumn', 'winter']
-                .filter(season => match[season])
-                .map(season => season.charAt(0).toUpperCase() + season.slice(1))
-                .join(', ') || 'N/A'
-            }</p>
+            <div className="match-info">
+              <div className="item-info">
+                <div>{match.min_temp}° - {match.max_temp}°</div>
+                <div>
+                  {
+                    ['spring', 'summer', 'autumn', 'winter']
+                      .filter((season) => match[season])
+                      .map(capitalize)
+                      .join(', ') || 'N/A'
+                  }
+                </div>
+              </div>
 
-            {/* Action Buttons */}
-            <DeleteMatches
-              matchId={match._id}
-              onDeleteSuccess={handleDeleteSuccess}
-              onError={handleError}
-            />
-
-            <button
-              onClick={() => setEditingMatch(match)}
-              style={{
-                marginTop: '0.5rem',
-                color: 'white',
-                backgroundColor: 'blue',
-                border: 'none',
-                padding: '0.5rem 1rem',
-                cursor: 'pointer',
-                marginLeft: '1rem'
-              }}
-            >
-              Edit
-            </button>
-          </li>
+              <div className="button-row">
+                <DeleteMatches
+                  matchId={match._id}
+                  onDeleteSuccess={handleDeleteSuccess}
+                  onError={handleError}
+                />
+                <button className="text-button" onClick={() => setEditingMatch(match)}>
+                  Edit
+                </button>
+              </div>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
 
-      {/* Update Modal */}
       {editingMatch && (
         <UpdateMatches
           match={editingMatch}
@@ -161,7 +183,7 @@ const ViewMatches = () => {
           onError={handleError}
         />
       )}
-    </>
+    </div>
   );
 };
 

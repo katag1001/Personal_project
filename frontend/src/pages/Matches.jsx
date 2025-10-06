@@ -2,19 +2,30 @@ import React from 'react';
 import Header from '../components/header';
 import ViewMatches from '../components/matches/viewMatches';
 import { Link } from 'react-router-dom';
+import './Clothes.css';
+import './Matches.css';
+
 
 const Matches = ({ loggedIn, logout }) => {
   return (
-    <>
+
+      <div className="full-page">
       <Header loggedIn={loggedIn} />
-      <Link to="/buildmatches">
-        <button>Build Matches</button>
-      </Link>
+
+      <div className="sticky-upload-container">
+        <Link to="/buildmatches">
+          <button className="top-button">Build Outfits</button>
+        </Link>
+      </div>
+
+      <div className="match-page-container">
       <Link to="/oldmatches">
-        <button>Rejected Matches</button>
+        <button className="regular-button">View Rejected Outfits</button>
       </Link>
       <ViewMatches />
-    </>
+      </div>
+      </div>
+
   );
 };
 
