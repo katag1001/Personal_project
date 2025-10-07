@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './viewMatches.css';
 
 const RejectedMatches = () => {
   const [matches, setMatches] = useState([]);
@@ -152,7 +153,6 @@ const RejectedMatches = () => {
 
   return (
     <div className="view-matches-container">
-      <h2>Rejected Outfits</h2>
 
       {/* Season filter buttons */}
       <div className="season-filters">

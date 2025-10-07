@@ -1,16 +1,19 @@
 import React from 'react';
 import Header from '../components/header';
-import { Link } from 'react-router-dom';
 import RejectedMatches from '../components/matches/rejectedMatches';
+import { Link } from 'react-router-dom';
 import './Pages.css';
-import './Matches.css';
-
 
 const OldMatches = ({ loggedIn, logout }) => {
   return (
 
-      <div className="full-page">
+  <div className="full-page">
+
       <Header loggedIn={loggedIn} />
+
+      <div className="clothes-page-container">
+
+      <p className="under-button-title">unwanted Outfits</p>
 
       <div className="sticky-upload-container">
         <Link to="/buildmatches">
@@ -18,13 +21,16 @@ const OldMatches = ({ loggedIn, logout }) => {
         </Link>
       </div>
 
-      <div className="match-page-container">
+      <div className="extra-space">
       <Link to="/matches">
-      <button className="regular-button"> Back to Current Outfits</button>
+        <button className="regular-button">View Rejected Outfits</button>
       </Link>
+      </div>
+      
       <RejectedMatches />
+      
       </div>
-      </div>
+    </div>
 
   );
 };

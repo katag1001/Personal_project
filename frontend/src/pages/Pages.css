@@ -73,20 +73,9 @@
   border: none;
 }
 
-.match-page-container {
-  padding: 4.5rem 1.5rem 1.5rem 1.5rem ;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: 'Helvetica Neue', sans-serif;
-  min-height: 100vh;
-  width: 100%;
-  box-sizing: border-box;
-}
-
 .clothes-page-container {
   display: flex;
-  justify-content: center;
+
   align-items: center;  
   flex-direction: column;
   font-family: 'Helvetica Neue', sans-serif;
@@ -115,8 +104,12 @@
   letter-spacing: 0.1em;
   text-align: center;
   color: black;
+  margin: 1rem;
 }
 
+.extra-space {
+  margin: 20px;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -128,9 +121,7 @@
   .clothing-page-container {
     padding: 1rem;
   }
-    .match-page-container {
-    padding: 1rem;
-  }
+
 }
 
 

@@ -117,7 +117,6 @@ const ViewMatches = () => {
 
   return (
     <div className="view-matches-container">
-      <h2>Your outfits</h2>
 
       {/* Season filter buttons */}
       <div className="season-filters">
