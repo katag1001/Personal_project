@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../clothes/viewClothes.css'; // ✅ Reuse the same CSS as ViewClothes
+import '../clothes/viewClothes.css'; // Reuse the same CSS as ViewClothes
 
 const CreateMatch = () => {
   const [formData, setFormData] = useState({
@@ -106,8 +106,11 @@ const CreateMatch = () => {
   const renderItems = (items, category) => (
     <div className="clothing-section">
       <div className="section-wrapper">
-        <h3 className="section-title">{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+        <p className="section-title-viewclothes">{sectionTitles[category]}</p>
         <div className="horizontal-scroll-wrapper">
+          <button className="scroll-arrow left-arrow" onClick={() => scrollLeft(type)}>
+                ‹
+              </button>
           <div className="scroll-container">
             {items.length === 0 ? (
               <p className="no-items">No items found.</p>
@@ -115,10 +118,10 @@ const CreateMatch = () => {
               items.map(item => (
                 <div
                   key={item._id}
-                  className="clothing-card"
+                  className="clothing-card-buildmatch"
                   onClick={() => handleSelect(category, item)}
                   style={{
-                    border: isSelected(category, item) ? '3px solid green' : '2px solid black',
+                    border: isSelected(category, item) ? '3px solid pink' : '2px solid black',
                     cursor: 'pointer',
                   }}
                 >
@@ -126,32 +129,38 @@ const CreateMatch = () => {
                     <img
                       src={item.imageUrl}
                       alt={item.name}
-                      className="clothing-image"
+                      className="clothing-image-buildmatch"
                     />
                   )}
-                  <div className="clothing-details">
-                    <div className="item-name">{item.name}</div>
-                    <div className="item-info">
-                      <div>{item.min_temp}° - {item.max_temp}°</div>
-                      <div>{(item.colors || []).join(', ')}</div>
-                    </div>
-                  </div>
+
                 </div>
               ))
             )}
-          </div>
+            </div>
+            <button className="scroll-arrow right-arrow" onClick={() => scrollRight(type)}>
+                ›
+              </button>
+          
         </div>
       </div>
     </div>
   );
 
+  const sectionTitles = {
+  top: "Top Half",
+  outer: "Outerwear",
+  bottom: "Bottom Half",
+  onepiece: "One-Pieces"
+};
+
   return (
     <div className="view-clothes-container">
-      <button onClick={handleSubmit} className="text-button" style={{ marginBottom: '2rem' }}>
-        Submit Match
-      </button>
 
-      
+      <div className="sticky-upload-container">
+      <button onClick={handleSubmit} className="top-button">
+        Submit Outfit
+      </button>
+      </div>
 
       <form onSubmit={handleSubmit}>
         {renderItems(clothesData.tops, 'top')}

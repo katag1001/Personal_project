@@ -123,6 +123,13 @@ const ViewClothes = () => {
     }
   };
 
+  const sectionTitles = {
+  top: "Top Half",
+  outer: "Outerwear",
+  bottom: "Bottom Half",
+  onepiece: "One-Pieces"
+};
+
   return (
     <div className="view-clothes-container">
 
@@ -131,9 +138,9 @@ const ViewClothes = () => {
       {clothingTypes.map((type) => (
         <div key={type} className="clothing-section">
           <div className="section-wrapper">
-            <h3 className="section-title">
-              {type.charAt(0).toUpperCase() + type.slice(1)}
-            </h3>
+            <p className="section-title-viewclothes">
+              {sectionTitles[type]}
+            </p>
 
             <div className="horizontal-scroll-wrapper">
               <button className="scroll-arrow left-arrow" onClick={() => scrollLeft(type)}>
@@ -153,11 +160,11 @@ const ViewClothes = () => {
                         <img
                           src={item.imageUrl}
                           alt={item.name || 'Clothing item'}
-                          className="clothing-image"
+                          className="clothing-image-viewclothes"
                         />
                       )}
 
-                      <div className="clothing-details">
+                      <div className="clothing-details-viewclothes">
                         <div className="item-name">{item.name}</div>
 
                         <div className="item-info">

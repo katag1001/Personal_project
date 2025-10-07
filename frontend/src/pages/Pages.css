@@ -98,12 +98,12 @@
 /***For view matches, the css for the h2 is in viewMatches.css***/
 /****For the clothes page only****/
 .under-button-title {
-  padding: 1.5rem 1.5rem;
   font-family: 'Playfair Display', serif;
   font-size: 2.5rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: black;
+  margin: 4rem 0rem 0rem 0rem;
 }
 
 /****For pages without top button****/

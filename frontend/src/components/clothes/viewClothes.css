@@ -23,14 +23,6 @@
 }
 
 
-.title {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-align: center;
-}
-
 .error-text {
   color: red;
   margin-bottom: 1rem;
@@ -104,13 +96,29 @@
   margin-right: -2px;
 }
 
-.clothing-image {
+.clothing-card-buildmatch {
+  width: 140px;
+  border: 2px solid black;
+  background-color: white;
+  margin-right: -2px;
+}
+/** Card selected CSS directly inline in createMatch.jsx line 120 ****/
+
+
+.clothing-image-viewclothes {
   width: 40%;
   height: 100%;
   object-fit: cover;
 }
 
-.clothing-details {
+.clothing-image-buildmatch {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+.clothing-details-viewclothes {
   width: 60%;
   display: flex;
   flex-direction: column;
@@ -160,26 +168,18 @@
 
 .section-wrapper {
   position: relative;
-  padding-top: 5rem; 
   width: 100%;
-  
+  padding:10px;
 }
 
-.section-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 4rem;
-  font-weight: 700;
-  color: #000;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  position: absolute;
-  top: 0;
-  left: 1rem;
-  transform: translateY(85%); /* MOVE IT OVER THE TOP OF THE DIV */
-  margin: 0;
-  z-index: 2;
-  pointer-events: none;
-  line-height: 1;
+.section-title-viewclothes {
+  font-family: 'Helvetica Neue', sans-serif;
+  color: black;
+  margin: 0px;
+  padding: 0rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Text button style */
@@ -222,10 +222,4 @@
   right: 0;
 }
 
-/* Responsive title sizing */
-@media (max-width: 600px) {
-  .section-title {
-    font-size: 2.5rem;
-    transform: translateY(20%);
-  }
-}
+
