@@ -147,11 +147,11 @@ const CreateMatch = () => {
 
   return (
     <div className="view-clothes-container">
-      <h2 className="title">Create Match</h2>
-
       <button onClick={handleSubmit} className="text-button" style={{ marginBottom: '2rem' }}>
         Submit Match
       </button>
+
+      
 
       <form onSubmit={handleSubmit}>
         {renderItems(clothesData.tops, 'top')}

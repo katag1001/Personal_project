@@ -214,7 +214,7 @@ const ViewToday = () => {
     <div className="view-today-container">
 
       <div className="horizontal-scroll-wrapper">
-        <button className="scroll-arrow" onClick={goPrev}>&lt;</button>
+        <button className="left-right" onClick={goPrev}>‹</button>
 
         <div className="clothing-card">
           <div className="today-image-group">
@@ -231,7 +231,7 @@ const ViewToday = () => {
           </div>
         </div>
 
-        <button className="scroll-arrow" onClick={goNext}>&gt;</button>
+        <button className="left-right" onClick={goNext}>›</button>
       </div>
     </div>
   );

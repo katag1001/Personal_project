@@ -8,9 +8,8 @@ const BuildMatches = ({ loggedIn, logout }) => {
     <>
       <div className="full-page">
       <Header loggedIn={loggedIn} />
-      <div className="page-container">
+      <h2 className="page-title">create outfits</h2>
       <CreateMatch />
-      </div>
       </div>
     </>
   );

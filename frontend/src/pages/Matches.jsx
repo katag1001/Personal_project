@@ -3,7 +3,6 @@ import Header from '../components/header';
 import ViewMatches from '../components/matches/viewMatches';
 import { Link } from 'react-router-dom';
 import './Pages.css';
-import './Matches.css';
 
 
 const Matches = ({ loggedIn, logout }) => {

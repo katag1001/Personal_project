@@ -9,8 +9,8 @@ const Clothes = ({ loggedIn, logout }) => {
     <>
   <div className="full-page">
   <Header loggedIn={loggedIn} />
-  <div className="page-container">
-  <h2>My Clothes</h2>
+  <div className="clothes-page-container">
+  <p className="under-button-title">My Clothes</p>
   <div className="sticky-upload-container">
     <Link to="/addclothes">
       <button className="top-button">Upload Clothes</button>

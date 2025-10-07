@@ -9,6 +9,7 @@ const AddClothes = ({ loggedIn }) => {
     <div className="full-page">
       <Header loggedIn={loggedIn} />
       <div>
+        <h2 className="page-title">Add Clothing Item</h2>
         <CreateClothes />
       </div>
     </div>

@@ -55,6 +55,7 @@ const CreateClothes = () => {
         styles: [formData.styles],
       };
 
+      console.log('Submitting payload to backend:', payload); 
       const res = await axios.post('/api/clothing', payload);
 
       if (res.data.error) {
@@ -101,7 +102,7 @@ const CreateClothes = () => {
       {showForm ? (
         <>
         <div className="create-clothes-container">
-          <h2 className="form-title">Add Clothing Item</h2>
+          
           <form className="clothing-form" onSubmit={handleSubmit}>
             <label>
               Name:
