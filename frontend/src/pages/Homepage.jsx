@@ -8,7 +8,7 @@ const Homepage = ({ loggedIn, logout }) => {
     <>
       <div className="full-page">
       <Header loggedIn={loggedIn} />
-      <div className="page-container">
+      <div className="clothes-page-container">
         {loggedIn ? (
           <>
             <p>Welcome!</p>
@@ -17,7 +17,7 @@ const Homepage = ({ loggedIn, logout }) => {
         ) : (
           <>
             <p>You are not logged in.</p>
-            <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
+            <Link to="/login">Login</Link><Link to="/register">Register</Link>
           </>
         )}
       </div>

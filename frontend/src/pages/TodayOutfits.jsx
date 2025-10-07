@@ -9,9 +9,11 @@ const TodayOutfits = ({ loggedIn, logout }) => {
   return (
     <><div className="full-page">
       <Header loggedIn={loggedIn} />
+      <div className="clothes-page-container">
         <h2 className="page-title">Today's Outfit</h2>
       <AutoWeather />
       <ViewToday />
+      </div>
 </div>
     </>
   );

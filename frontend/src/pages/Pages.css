@@ -1,6 +1,8 @@
 
 .full-page {
     width: 98.5vw;
+    margin: 0;
+    padding: 0;
 }
 
 /* Sticky Upload Bar below the header */

@@ -1,74 +1,36 @@
 // src/pages/Login.jsx
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import Header from '../components/header';
+import LoginForm from '../components/LoginForm';
 import './Pages.css';
 
 const Login = ({ login, logout, loggedIn }) => {
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('🔍 Submitting login form with:', form);
-
-    try {
-      const res = await axios.post('/api/users/login', form);
-      console.log('✅ Login response from backend:', res.data);
-
-      setMessage(res.data.message);
-
-      if (res.data.ok && res.data.token) {
-        console.log('✅ Token received:', res.data.token);
-        login(res.data.token); // ✅ Pass raw token (not stringified)
-      } else {
-        console.log('⚠️ Login unsuccessful, no token received');
-      }
-    } catch (error) {
-      console.error('❌ Login error:', error);
-      setMessage('Login failed');
+  useEffect(() => {
+    if (loggedIn) {
+      navigate('/');
     }
-  };
-
-  if (loggedIn) {
-    return (
-      <div className="full-page">
-        <Header loggedIn={loggedIn} />
-        <h2>You are logged in</h2>
-        {message && <p>{message}</p>}
-        <button onClick={logout}>Logout</button>
-      </div>
-    );
-  }
+  }, [loggedIn, navigate]);
 
   return (
-    <div>
+    <div className="full-page">
       <Header loggedIn={loggedIn} />
-      <h2>Login</h2>
-      {message && <p>{message}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          required
-        /><br/>
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          required
-        /><br/>
-        <button type="submit">Login</button>
-      </form>
+      <div className="clothes-page-container">
+        {loggedIn ? (
+          <>
+          
+            <p>You are logged in</p>
+            <button onClick={logout}>Logout</button>
+          </>
+        ) : (
+          <>
+          <h2 className="page-title">Login</h2>
+          <LoginForm login={login} />
+          </>
+        )}
+      </div>
     </div>
   );
 };

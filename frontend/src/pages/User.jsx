@@ -8,7 +8,7 @@ const User = ({ loggedIn, logout }) => {
     <>
     <div className="full-page">
       <Header loggedIn={loggedIn} />
-      <div>
+      <div className="clothes-page-container">
         <h2>You are logged in</h2>
         <button onClick={logout}>Logout</button>
       </div>
