@@ -1,16 +1,15 @@
 import React from 'react';
 import colorOptions from '../../constants/colorOptions';
+import './updateClothesForm.css'
 
-
-const styleOptions = [
-  "plain",
-  "patterned"
-];
+const styleOptions = ["plain", "patterned"];
 
 const UpdateClothesForm = ({ type, formData, onChange, onSubmit, onCancel }) => {
   const handleMultiSelectChange = (e) => {
     const { name, options } = e.target;
-    const selected = Array.from(options).filter(o => o.selected).map(o => o.value);
+    const selected = Array.from(options)
+      .filter(o => o.selected)
+      .map(o => o.value);
     onChange({ target: { name, value: selected } });
   };
 
@@ -20,125 +19,92 @@ const UpdateClothesForm = ({ type, formData, onChange, onSubmit, onCancel }) => 
   };
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: '10%',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        backgroundColor: 'white',
-        border: '1px solid #ccc',
-        padding: '1rem',
-        zIndex: 1000,
-        width: '300px',
-        borderRadius: '8px'
-      }}
-    >
-      <h3>Update {type.charAt(0).toUpperCase() + type.slice(1)}</h3>
-      <form onSubmit={onSubmit}>
-        <label>
+    <div className="modal-wrapper">
+      <p className="modal-title">Update {type.charAt(0).toUpperCase() + type.slice(1)}</p>
+      <form className="update-form" onSubmit={onSubmit}>
+        <label className="form-label">
           Name:
           <input
+            className="form-input"
             type="text"
             name="name"
             value={formData.name}
             onChange={onChange}
-            style={{ width: '100%' }}
             required
           />
         </label>
-        <br />
 
-        <label>
-          Colors:
+        <label className="form-label">
+          Colors (multi-select):
           <select
+            className="form-select multi"
             name="colors"
             multiple
             value={formData.colors}
             onChange={handleMultiSelectChange}
-            style={{ width: '100%', height: '80px' }}
           >
             {colorOptions.map((color) => (
               <option key={color} value={color}>{color}</option>
             ))}
           </select>
         </label>
-        <br />
 
-        <label>
+        <label className="form-label">
           Styles:
           <select
+            className="form-select multi"
             name="styles"
             multiple
             value={formData.styles}
             onChange={handleMultiSelectChange}
-            style={{ width: '100%', height: '50px' }}
           >
             {styleOptions.map((style) => (
               <option key={style} value={style}>{style}</option>
             ))}
           </select>
         </label>
-        <br />
 
-        <label>
+        <label className="form-label">
           Min Temp:
           <input
+            className="form-input"
             type="number"
             name="min_temp"
             value={formData.min_temp}
             onChange={onChange}
           />
         </label>
-        <br />
 
-        <label>
+        <label className="form-label">
           Max Temp:
           <input
+            className="form-input"
             type="number"
             name="max_temp"
             value={formData.max_temp}
             onChange={onChange}
           />
         </label>
-        <br />
-
-        <label>
-          Last Worn Date:
-          <input
-            type="date"
-            name="lastWornDate"
-            value={formData.lastWornDate}
-            onChange={onChange}
-          />
-        </label>
-        <br />
-
-        <fieldset style={{ marginTop: '10px' }}>
-          <legend>Seasons</legend>
+        <fieldset className="season-group">
+          <legend className="legend-title">Seasons</legend>
           {['spring', 'summer', 'autumn', 'winter'].map((season) => (
-            <label key={season} style={{ display: 'block' }}>
-              <input
-                type="checkbox"
-                name={season}
-                checked={formData[season] || false}
-                onChange={handleCheckboxChange}
-              />
-              {season.charAt(0).toUpperCase() + season.slice(1)}
-            </label>
+            <label key={season} className="season-label">
+  <input
+    type="checkbox"
+    name={season}
+    checked={formData[season] || false}
+    onChange={handleCheckboxChange}
+  />
+  <span className="custom-checkbox"></span>
+  {season.charAt(0).toUpperCase() + season.slice(1)}
+</label>
           ))}
         </fieldset>
 
-        <button type="submit" style={{ marginTop: '10px' }}>
-          Save
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          style={{ marginLeft: '10px' }}
-        >
-          Cancel
-        </button>
+        <div className="button-group">
+          <button type="submit" className="save-button">Save</button>
+          <button type="button" className="cancel-button" onClick={onCancel}>Cancel</button>
+        </div>
       </form>
     </div>
   );

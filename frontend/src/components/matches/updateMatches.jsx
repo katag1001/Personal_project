@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './updateMatches.css';
 
 const UpdateMatches = ({ match, onClose, onUpdateSuccess, onError }) => {
   const [updateData, setUpdateData] = useState({
@@ -65,53 +66,83 @@ const UpdateMatches = ({ match, onClose, onUpdateSuccess, onError }) => {
   };
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0, left: 0,
-        width: '100vw', height: '100vh',
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        display: 'flex', justifyContent: 'center', alignItems: 'center',
-        zIndex: 1000,
-      }}
-    >
-      <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '10px', width: '400px' }}>
-        <h3>Edit Match</h3>
-        <form onSubmit={handleSubmit}>
-          <label>
-            Spring: <input type="checkbox" name="spring" checked={updateData.spring} onChange={handleChange} />
-          </label><br />
-          <label>
-            Summer: <input type="checkbox" name="summer" checked={updateData.summer} onChange={handleChange} />
-          </label><br />
-          <label>
-            Autumn: <input type="checkbox" name="autumn" checked={updateData.autumn} onChange={handleChange} />
-          </label><br />
-          <label>
-            Winter: <input type="checkbox" name="winter" checked={updateData.winter} onChange={handleChange} />
-          </label><br />
-          <label>
-            Min Temp: <input type="number" name="min_temp" value={updateData.min_temp} onChange={handleChange} />
-          </label><br />
-          <label>
-            Max Temp: <input type="number" name="max_temp" value={updateData.max_temp} onChange={handleChange} />
-          </label><br />
+    <div className="overlay-wrapper">
+      <div className="modal-container">
+        <p className="modal-header">Edit Match</p>
+        <form className="update-match-form" onSubmit={handleSubmit}>
+          <div className="form-row">
+            <label htmlFor="spring">Spring:</label>
+            <input
+              type="checkbox"
+              id="spring"
+              name="spring"
+              checked={updateData.spring}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-row">
+            <label htmlFor="summer">Summer:</label>
+            <input
+              type="checkbox"
+              id="summer"
+              name="summer"
+              checked={updateData.summer}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-row">
+            <label htmlFor="autumn">Autumn:</label>
+            <input
+              type="checkbox"
+              id="autumn"
+              name="autumn"
+              checked={updateData.autumn}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-row">
+            <label htmlFor="winter">Winter:</label>
+            <input
+              type="checkbox"
+              id="winter"
+              name="winter"
+              checked={updateData.winter}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-row">
+            <label htmlFor="min_temp">Min Temp:</label>
+            <input
+              type="number"
+              id="min_temp"
+              name="min_temp"
+              value={updateData.min_temp}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-row">
+            <label htmlFor="max_temp">Max Temp:</label>
+            <input
+              type="number"
+              id="max_temp"
+              name="max_temp"
+              value={updateData.max_temp}
+              onChange={handleChange}
+            />
+          </div>
 
-          {/* Optional: Display tags as read-only text */}
           {match?.tags?.length > 0 && (
-            <div>
+            <div className="tags-display">
               <strong>Tags:</strong> {match.tags.join(', ')}
             </div>
           )}
 
-          <button type="submit" style={{ marginTop: '1rem' }}>Save</button>
-          <button
-            type="button"
-            onClick={onClose}
-            style={{ marginLeft: '1rem', backgroundColor: 'gray', color: 'white' }}
-          >
-            Cancel
-          </button>
+          <div className="button-group">
+            <button type="submit" className="save-btn">Save</button>
+            <button type="button" onClick={onClose} className="cancel-btn">
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>

@@ -11,7 +11,7 @@
   background-color: #111;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   position: fixed;
-  top: 110px; /* THIS NEEDS TO BE THE SAME HEIGHT AS THE HEADER SO THAT IT SITS BENEATH */
+  top: 80px; /* THIS NEEDS TO BE THE SAME HEIGHT AS THE HEADER SO THAT IT SITS BENEATH - components/header line 5 */
   z-index: 1050;
 }
 
