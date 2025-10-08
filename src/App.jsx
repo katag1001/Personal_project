@@ -91,9 +91,10 @@ const App = () => {
   }
 
   return (
+    <><Analytics />
+    <SpeedInsights />
     <Router>
-      <Analytics />
-      <SpeedInsights />
+
       <Routes>
         {/* Public Routes */}
         <Route path="/register" element={<Register />} />
@@ -190,6 +191,7 @@ const App = () => {
       
 
     </Router>
+    </>
   );
 };
 
