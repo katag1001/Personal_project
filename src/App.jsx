@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import {URL} from "./config"; 
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 // Pages
 import Homepage from './pages/Homepage';
@@ -90,6 +92,8 @@ const App = () => {
 
   return (
     <Router>
+      <Analytics />
+      <SpeedInsights />
       <Routes>
         {/* Public Routes */}
         <Route path="/register" element={<Register />} />
@@ -183,6 +187,8 @@ const App = () => {
           }
         />
       </Routes>
+      
+
     </Router>
   );
 };
