@@ -3,6 +3,7 @@ import axios from 'axios';
 import DeleteMatches from './deleteMatches';
 import UpdateMatches from './updateMatches';
 import './viewMatches.css';
+import {URL} from "../../config"; 
 
 const ViewMatches = () => {
   const [matches, setMatches] = useState([]);
@@ -15,7 +16,7 @@ const ViewMatches = () => {
     const fetchMatches = async () => {
       try {
         setError(null);
-        const response = await axios.post('/api/match', {
+        const response = await axios.post(`${URL}/match`, {
           username: localStorage.getItem('user'),
         });
         const fetchedMatches = response.data;
@@ -36,7 +37,7 @@ const ViewMatches = () => {
 
         const fetchItem = async ({ type, name }) => {
           try {
-            const res = await axios.post(`/api/clothing/${type}/${name}`, {
+            const res = await axios.post(`${URL}/clothing/${type}/${name}`, {
               username: localStorage.getItem('user'),
             });
             return { key: `${type}_${name}`, data: res.data };

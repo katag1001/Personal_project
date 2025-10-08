@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './ViewToday.css';
+import {URL} from "../../config"; 
 
 const ViewToday = () => {
   const [outfits, setOutfits] = useState([]);
@@ -13,7 +14,7 @@ const ViewToday = () => {
   const fetchTodayOutfits = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('/api/today/get', {
+      const response = await axios.post(`${URL}/today/get`, {
         username: localStorage.getItem('user'),
       });
       const data = response.data;
@@ -54,7 +55,7 @@ const ViewToday = () => {
             const apiType = type === 'outer' ? 'outer' : type;
             console.log(`[FETCH] Fetching item: type=${type}, name=${name}, apiType=${apiType}`);
             try {
-              const res = await axios.post(`/api/clothing/${apiType}/${name}`, {
+              const res = await axios.post(`${URL}/clothing/${apiType}/${name}`, {
                 username: localStorage.getItem('user'),
               });
               console.log(`[FETCH] Success for ${type}_${name}`, res.data);
@@ -121,7 +122,7 @@ const ViewToday = () => {
       return;
     }
     try {
-      const response = await fetch(`/api/match/${outfit._id}`, {
+      const response = await fetch(`${URL}/match/${outfit._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ lastWornDate: new Date().toISOString() }),
@@ -150,7 +151,7 @@ const ViewToday = () => {
       return;
     }
     try {
-      const response = await fetch(`/api/match/${outfit._id}`, {
+      const response = await fetch(`${URL}/match/${outfit._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rejected: true }),

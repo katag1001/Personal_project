@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import {URL} from "../../config"; 
 
 const RegisterForm = () => {
   const [form, setForm] = useState({
@@ -20,7 +21,7 @@ const RegisterForm = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post('/api/users/register', form);
+      const res = await axios.post(`${URL}/users/register`, form);
       setMessage(res.data.message);
 
       if (res.data.ok) {

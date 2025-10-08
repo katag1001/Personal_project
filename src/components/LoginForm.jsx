@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import {URL} from "../../config"; 
 
 const LoginForm = ({ login }) => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -16,7 +17,7 @@ const LoginForm = ({ login }) => {
     console.log('🔍 Submitting login form with:', form);
 
     try {
-      const res = await axios.post('/api/users/login', form);
+      const res = await axios.post(`${URL}/users/login`, form);
       console.log('✅ Login response from backend:', res.data);
 
       setMessage(res.data.message);

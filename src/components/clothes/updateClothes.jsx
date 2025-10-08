@@ -1,6 +1,8 @@
+import {URL} from "../../config"; 
+
 const updateClothes = async (type, id, updatedData) => {
   try {
-    const response = await fetch(`/api/clothing/${type}/${id}`, {
+    const response = await fetch(`${URL}/clothing/${type}/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

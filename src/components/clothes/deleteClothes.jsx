@@ -1,6 +1,9 @@
+
+import {URL} from "../../config"; 
+
 const deleteClothes = async (type, id) => {
   try {
-    const response = await fetch(`/api/clothing/${type}/${id}`, {
+    const response = await fetch(`${URL}/clothing/${type}/${id}`, {
       method: 'DELETE',
     });
 

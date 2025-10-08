@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './updateMatches.css';
+import {URL} from "../../config"; 
 
 const UpdateMatches = ({ match, onClose, onUpdateSuccess, onError }) => {
   const [updateData, setUpdateData] = useState({
@@ -46,7 +47,7 @@ const UpdateMatches = ({ match, onClose, onUpdateSuccess, onError }) => {
     };
 
     try {
-      const response = await fetch(`/api/match/${match._id}`, {
+      const response = await fetch(`${URL}/match/${match._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)

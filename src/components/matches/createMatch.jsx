@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../clothes/viewClothes.css'; // Reuse the same CSS as ViewClothes
+import {URL} from "../../config"; 
 
 const CreateMatch = () => {
   const [formData, setFormData] = useState({
@@ -24,10 +25,10 @@ const CreateMatch = () => {
       const user = localStorage.getItem('user');
       try {
         const [tops, bottoms, outers, onepieces] = await Promise.all([
-          axios.post('/api/clothing/top', { username: user }).then(res => res.data),
-          axios.post('/api/clothing/bottom', { username: user }).then(res => res.data),
-          axios.post('/api/clothing/outer', { username: user }).then(res => res.data),
-          axios.post('/api/clothing/onepiece', { username: user }).then(res => res.data),
+          axios.post(`${URL}/clothing/top`, { username: user }).then(res => res.data),
+          axios.post(`${URL}/clothing/bottom`, { username: user }).then(res => res.data),
+          axios.post(`${URL}/clothing/outer`, { username: user }).then(res => res.data),
+          axios.post(`${URL}/clothing/onepiece`, { username: user }).then(res => res.data),
         ]);
         setClothesData({ tops, bottoms, outers, onepieces });
       } catch (err) {
@@ -90,7 +91,7 @@ const CreateMatch = () => {
     };
 
     try {
-      const res = await fetch('/api/match/matches', {
+      const res = await fetch(`${URL}/match/matches`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

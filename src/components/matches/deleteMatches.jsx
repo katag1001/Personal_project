@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './viewMatches.css';
+import {URL} from "../../config"; 
+
 
 const DeleteMatches = ({ matchId, onDeleteSuccess, onError }) => {
   const [loading, setLoading] = useState(false);
@@ -7,7 +9,7 @@ const DeleteMatches = ({ matchId, onDeleteSuccess, onError }) => {
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/match/${matchId}`, { method: 'DELETE' });
+      const response = await fetch(`${URL}/api/match/${matchId}`, { method: 'DELETE' });
       const data = await response.json();
 
       if (data.error) {

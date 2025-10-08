@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'; 
 import { useGeolocation } from "@uidotdev/usehooks";
 import './AutoWeather.css';
+import {URL} from "../../config"; 
 
 const AutoWeather = () => {
   const location = useGeolocation();
@@ -29,7 +30,7 @@ const AutoWeather = () => {
 
   const triggerCreateToday = async (min, max, season) => {
     try {
-      const response = await fetch('/api/today/create', {
+      const response = await fetch(`${URL}/today/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

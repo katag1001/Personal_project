@@ -4,6 +4,7 @@ import UploadImages from './uploadPics';
 import ViewNewMatches from './viewNewMatches';
 import colorOptions from '../../constants/colorOptions';
 import './createClothes.css';
+import {URL} from "../../config"; 
 
 const styleOptions = ["plain", "patterned"];
 
@@ -56,7 +57,7 @@ const CreateClothes = () => {
       };
 
       console.log('Submitting payload to backend:', payload); 
-      const res = await axios.post('/api/clothing', payload);
+      const res = await axios.post(`${URL}/clothing`, payload);
 
       if (res.data.error) {
         setMessage(`Error: ${res.data.error}`);

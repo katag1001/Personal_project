@@ -4,6 +4,7 @@ import deleteClothes from './deleteClothes';
 import updateClothes from './updateClothes';
 import UpdateClothesForm from './UpdateClothesForm';
 import './viewClothes.css';
+import {URL} from "../../config"; 
 
 const ViewClothes = () => {
   const [itemsByType, setItemsByType] = useState({});
@@ -22,7 +23,7 @@ const ViewClothes = () => {
       const allItems = {};
 
       for (const type of clothingTypes) {
-        const response = await axios.post(`/api/clothing/${type}`, { username });
+        const response = await axios.post(`${URL}/clothing/${type}`, { username });
         allItems[type] = response.data;
       }
 

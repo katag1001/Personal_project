@@ -1,8 +1,8 @@
 // src/todayClothes.jsx
 import React, { useState, useEffect } from 'react';
 import { useGeolocation } from "@uidotdev/usehooks";
+import {URL} from "../../config"; 
 
-const BASE_URL = 'http://localhost:4444';
 const seasons = ['spring', 'summer', 'autumn', 'winter'];
 
 export default function TodayClothes() {
@@ -26,7 +26,7 @@ export default function TodayClothes() {
 
   async function fetchMatches() {
     try {
-      const res = await fetch(`${BASE_URL}/api/match/`);
+      const res = await fetch(`${URL}/match/`);
       const data = await res.json();
       setMatches(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -36,7 +36,7 @@ export default function TodayClothes() {
 
   async function fetchToday() {
     try {
-      const res = await fetch(`${BASE_URL}/api/today/get`);
+      const res = await fetch(`${URL}/today/get`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setTodayOutfits(data);
@@ -65,7 +65,7 @@ export default function TodayClothes() {
     }
 
     try {
-      const res = await fetch(`${BASE_URL}/api/today/create`, {
+      const res = await fetch(`${URL}/today/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

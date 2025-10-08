@@ -48,7 +48,20 @@ cloudinary.config({
 // Attach the API routes to specific endpoints
 app.use('/api', allRoutes);
 
-// Start the server and listen for incoming requests
-app.listen(port, () => {
-  console.log(`🚀 Server is running on http://localhost:${port}`);
-});
+module.exports = app;
+
+// And for development only start the server if we're not in a serverless environment
+// This will only happen locally in development mode
+if (process.env.NODE_ENV !== 'production') {
+
+  // Serve static files from the dist directory
+  app.use(express.static("dist"));
+  // Serve index.html for all other requests
+  app.get("/{*splat}", (req, res) => {
+    res.sendFile(__dirname + "/dist/index.html");
+  });
+  // Start the server
+  const port = process.env.PORT || 4444;
+  app.listen(port, () => console.log("🚀 Listening on port: " + port + " 🚀"));
+}
+

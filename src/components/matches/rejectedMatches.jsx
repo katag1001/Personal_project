@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './viewMatches.css';
+import {URL} from "../../config"; 
 
 const RejectedMatches = () => {
   const [matches, setMatches] = useState([]);
@@ -13,7 +14,7 @@ const RejectedMatches = () => {
     const fetchMatches = async () => {
       try {
         setError(null);
-        const response = await axios.post('/api/match', { username: localStorage.getItem('user') });
+        const response = await axios.post(`${URL}/match`, { username: localStorage.getItem('user') });
         const fetchedMatches = response.data;
         setMatches(fetchedMatches);
 
@@ -37,7 +38,7 @@ const RejectedMatches = () => {
         // Fetch each item from clothing API
         const fetchItem = async ({ type, name }) => {
           try {
-            const res = await axios.post(`/api/clothing/${type}/${name}`, {
+            const res = await axios.post(`${URL}/clothing/${type}/${name}`, {
               username: localStorage.getItem('user')
             });
             return { key: `${type}_${name}`, data: res.data };
@@ -93,7 +94,7 @@ const RejectedMatches = () => {
   // Delete match by ID
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`/api/match/${id}`, {
+      const response = await fetch(`${URL}/match/${id}`, {
         method: 'DELETE',
       });
 
@@ -112,7 +113,7 @@ const RejectedMatches = () => {
   // Reinstate match (set rejected to false)
   const handleReinstate = async (id) => {
     try {
-      const response = await fetch(`/api/match/${id}`, {
+      const response = await fetch(`${URL}/match/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
