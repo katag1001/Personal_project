@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import deleteClothes from './deleteClothes';
 import updateClothes from './updateClothes';
-import UpdateClothesForm from './UpdateClothesForm';
+import UpdateClothesForm from './updateClothesForm';
 import './viewClothes.css';
 import {URL} from "../../config"; 
 
