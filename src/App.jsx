@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
-import {URL} from "../../config"; 
+import {URL} from "./config"; 
 
 // Pages
 import Homepage from './pages/Homepage';
