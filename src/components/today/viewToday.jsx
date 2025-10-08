@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './ViewToday.css';
+import './viewToday.css';
 import {URL} from "../../config"; 
 
 const ViewToday = () => {
