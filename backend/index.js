@@ -4,10 +4,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // Import the route handlers for your application
-const clothingRoutes = require('./routes/clothingRoutes');
-const matchRoutes = require('./routes/matchRoutes');
-const todayRoutes = require('./routes/todayRoutes');
-const userRoutes = require('./routes/userRoutes');
+const allRoutes = require('./routes/allRoutes');
 
 const app = express();
 const port = process.env.PORT || 4444;
@@ -49,10 +46,7 @@ cloudinary.config({
 
 
 // Attach the API routes to specific endpoints
-app.use('/api/clothing', clothingRoutes);
-app.use('/api/match', matchRoutes); 
-app.use('/api/today', todayRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api', allRoutes);
 
 // Start the server and listen for incoming requests
 app.listen(port, () => {
