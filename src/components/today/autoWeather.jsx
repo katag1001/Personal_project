@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'; 
 import { useGeolocation } from "@uidotdev/usehooks";
-import './AutoWeather.css';
+import './autoWeather.css';
 import {URL} from "../../config"; 
 
 const AutoWeather = () => {
