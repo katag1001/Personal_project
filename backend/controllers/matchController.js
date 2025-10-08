@@ -1,4 +1,4 @@
-const Match = require('../models/Match');
+const { Match } = require('../models/AllModels.js');
 
 // Create one match item
 exports.createMatch = async (req, res) => {

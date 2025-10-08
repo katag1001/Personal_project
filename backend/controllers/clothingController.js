@@ -1,8 +1,4 @@
-const Top = require('../models/Top');
-const Bottom = require('../models/Bottom');
-const Outer = require('../models/Outer');
-const OnePiece = require('../models/OnePiece');
-const Match = require('../models/Match');
+const { Top, Bottom, Outer, OnePiece, Match } = require('../models/AllModels.js');
 const { processMatches } = require('../services/matchService');
 
 

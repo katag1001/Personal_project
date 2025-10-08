@@ -1,5 +1,4 @@
-const Match = require('../models/Match');
-const Today = require('../models/Today');
+const { Today, Match } = require('../models/AllModels.js');
 
 exports.createToday = async (req, res) => {
   try {

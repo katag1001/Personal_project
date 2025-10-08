@@ -1,4 +1,4 @@
-const Match = require('../models/Match');
+const { Match } = require('../models/AllModels.js');
 const axios = require("axios");
 const { colorPalettes } = require('../utils/colorPalettes');
 
