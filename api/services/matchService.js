@@ -201,7 +201,7 @@ async function processMatches(newItem, tops, bottoms, outer, onepiece) {
   }
 
   try {
-    const response = await axios.post("http://localhost:4444/api/match/bulk", matches);
+    const response = await axios.post("https://wearable-psi.vercel.app/api/match/bulk", matches);
     console.log("Bulk matches created:", response.data);
   } catch (error) {
     console.error("Error uploading matches:", error.message);
