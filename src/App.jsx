@@ -68,22 +68,27 @@ const App = () => {
   }, []);
 
   // ✅ Called after successful login
-  const login = (token) => {
-    console.log('📦 Storing token:', token);
-    localStorage.setItem('token', token);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    setLoggedIn(true);
-    console.log('✅ Login state set to TRUE');
-  };
+ const login = (token, email) => {
+  console.log('📦 Storing token:', token);
+  localStorage.setItem('token', token);
+  localStorage.setItem('user', email); // ✅ Add this line
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  setLoggedIn(true);
+  setUserEmail(email); // Optional, if you're storing it in state too
+  console.log('✅ Login state set to TRUE');
+};
+
 
   // ✅ Called to log out the user
-  const logout = () => {
-    localStorage.removeItem('token');
-    delete axios.defaults.headers.common['Authorization'];
-    setLoggedIn(false);
-    setUserEmail('');
-    console.log('✅ Login state set to FALSE');
-  };
+ const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user'); // ✅ Clear the cached user
+  delete axios.defaults.headers.common['Authorization'];
+  setLoggedIn(false);
+  setUserEmail('');
+  console.log('✅ Login state set to FALSE');
+};
+
 
   // Don't render routes until token verification completes
   if (isCheckingToken) {
