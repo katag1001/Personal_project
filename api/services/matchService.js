@@ -88,7 +88,7 @@ function colorMatch(newItem, matchItem, matches, context) {
   const combinedColors = [...new Set([...newItem.colors, ...matchItem.colors])];
 
   if (matching(combinedColors)) {
-    pushResult(newItem, matchItem, matches, combinedColors, context);
+    tempMatch(newItem, matchItem, matches, combinedColors, context);
   }
 
   function matching(combinedColors) {
@@ -98,10 +98,20 @@ function colorMatch(newItem, matchItem, matches, context) {
   }
 }
 
-function pushResult(newItem, matchItem, matches, combinedColors, context) {
-  console.log("Pushing result for new item:", newItem.name, "with", matchItem.name);
+function tempMatch(newItem, matchItem, matches, combinedColors, context) {
+  if (newItem.min_temp > matchItem.max_temp || matchItem.min_temp > newItem.max_temp) {
+    console.log("Temperature mismatch: skipping match between", newItem.name, "and", matchItem.name);
+    return;
+  }
+
   const min_temp = (newItem.min_temp + matchItem.min_temp) / 2;
   const max_temp = (newItem.max_temp + matchItem.max_temp) / 2;
+
+  pushResult(newItem, matchItem, matches, combinedColors, context, min_temp, max_temp);
+}
+
+function pushResult(newItem, matchItem, matches, combinedColors, context, min_temp, max_temp) {
+  console.log("Pushing result for new item:", newItem.name, "with", matchItem.name);
 
   function createResult(overrides) {
     return {
@@ -133,9 +143,9 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
       top: newItem.type === "top" ? newItem.name : matchItem.name,
       bottom: newItem.type === "bottom" ? newItem.name : matchItem.name,
       styles: [
-  ...(Array.isArray(newItem.styles) ? newItem.styles : (newItem.style ? [newItem.style] : [])),
-  ...(Array.isArray(matchItem.styles) ? matchItem.styles : (matchItem.style ? [matchItem.style] : []))
-],
+        ...(Array.isArray(newItem.styles) ? newItem.styles : (newItem.style ? [newItem.style] : [])),
+        ...(Array.isArray(matchItem.styles) ? matchItem.styles : (matchItem.style ? [matchItem.style] : []))
+      ],
     });
     matches.push(result);
     matchPath(result, context.tops, context.bottoms, context.outer, null, matches, context);
@@ -156,7 +166,7 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
       styles: [...baseStyles, matchItem.style],
     });
     matches.push(result);
-  
+
   } else if (newItem.type === "match" && newItem.top && newItem.bottom && !newItem.outer) {
     const result = createResult({
       top: newItem.top,
@@ -180,13 +190,14 @@ function pushResult(newItem, matchItem, matches, combinedColors, context) {
       onepiece: newItem.name,
       outer: matchItem.name,
       styles: [
-  ...(Array.isArray(newItem.styles) ? newItem.styles : (newItem.style ? [newItem.style] : [])),
-  ...(Array.isArray(matchItem.styles) ? matchItem.styles : (matchItem.style ? [matchItem.style] : []))
-],
+        ...(Array.isArray(newItem.styles) ? newItem.styles : (newItem.style ? [newItem.style] : [])),
+        ...(Array.isArray(matchItem.styles) ? matchItem.styles : (matchItem.style ? [matchItem.style] : []))
+      ],
     });
     matches.push(result);
   }
 }
+
 
 async function processMatches(newItem, tops, bottoms, outer, onepiece) {
   console.log("Processing matches for new item:", newItem.name);
